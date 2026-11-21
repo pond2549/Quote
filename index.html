@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบเสนอราคา - หจก.ดี-ไซน์เนจ 59 (D-SIGNAGE)</title>
+
+    <!-- Tailwind CSS (สำหรับแถบเครื่องมือและ Modal บนหน้าจอ) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Prompt (หัวข้อและตัวอักษรคมชัดสไตล์ PSL), Sarabun (เนื้อหา), Chakra Petch (โลโก้ D-SIGNAGE) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons (สำหรับปุ่มควบคุมด้านบน) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ==================== BASE & WORKSPACE ==================== */
+        :root {
+            --brand-orange: #F15A24;
+            --brand-orange-note: #E84A18;
+            --ink-black: #111111;
+            --line-dark: #555555;
+            --line-mid: #888888;
+            --line-soft: #999999;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+            background-color: #e5e7eb;
+            color: var(--ink-black);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-prompt {
+            font-family: 'Prompt', sans-serif;
+        }
+
+        .font-logo {
+            font-family: 'Chakra Petch', 'Prompt', sans-serif;
+        }
+
+        /* ==================== A4 SHEET VIEWPORT & PAPER ==================== */
+        .a4-viewport {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 18px 12px 44px 12px;
+            overflow: hidden;
+        }
+
+        .a4-scale-box {
+            transform-origin: top center;
+            transition: transform 0.15s ease-out;
+        }
+
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            min-height: 297mm;
+            max-height: 297mm;
+            background: #ffffff;
+            box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.25), 0 4px 12px rgba(15, 23, 42, 0.08);
+            padding: 12mm 13mm 10mm 13mm;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            color: var(--ink-black);
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* ==================== INLINE WYSIWYG INPUTS ==================== */
+        .doc-input,
+        .doc-textarea {
+            font-family: inherit;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            color: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            padding: 1px 3px;
+            margin: 0;
+            width: 100%;
+            outline: none;
+            transition: background-color 0.12s ease, border-color 0.12s ease;
+        }
+
+        .doc-textarea {
+            resize: none;
+            overflow: hidden;
+            display: block;
+        }
+
+        .doc-input:hover,
+        .doc-textarea:hover {
+            background-color: rgba(241, 90, 36, 0.05);
+            border-color: rgba(241, 90, 36, 0.22);
+        }
+
+        .doc-input:focus,
+        .doc-textarea:focus {
+            background-color: #fff7ed;
+            border-color: var(--brand-orange);
+        }
+
+        .doc-input::placeholder,
+        .doc-textarea::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        /* ==================== TOP INFO BOXES ==================== */
+        .top-info-row {
+            display: flex;
+            gap: 3mm;
+            height: 33mm;
+            flex-shrink: 0;
+        }
+
+        .customer-box {
+            flex: 1.65;
+            border: 2px solid var(--ink-black);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .customer-textarea {
+            width: 100%;
+            height: 100%;
+            padding: 6px 10px;
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+            font-size: 13px;
+            line-height: 1.55;
+            color: var(--ink-black);
+            border: none !important;
+            border-radius: 0;
+        }
+
+        .terms-box {
+            flex: 1;
+            border: 2px solid var(--ink-black);
+            overflow: hidden;
+        }
+
+        .terms-table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .terms-table td {
+            border: 1px solid var(--line-mid);
+            vertical-align: middle;
+            text-align: center;
+            padding: 2px 4px;
+        }
+
+        .terms-table tr:first-child td { border-top: none; }
+        .terms-table tr:last-child td { border-bottom: none; }
+        .terms-table td:first-child { border-left: none; }
+        .terms-table td:last-child { border-right: none; }
+
+        /* ==================== MAIN QUOTATION TABLE ==================== */
+        .main-table-box {
+            margin-top: 3mm;
+            border: 2px solid var(--ink-black);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            position: relative;
+            background: #ffffff;
+        }
+
+        /* Header Row (5 Columns) */
+        .items-header {
+            display: flex;
+            height: 9mm;
+            border-bottom: 1.8px solid var(--ink-black);
+            flex-shrink: 0;
+            background: #ffffff;
+        }
+
+        .items-header > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Prompt', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink-black);
+            white-space: nowrap;
+            border-right: 1px solid var(--line-mid);
+            padding: 0 2px;
+        }
+
+        .items-header > div:last-child {
+            border-right: none;
+        }
+
+        /* Column widths (exact match & prevents cut-off Thai labels) */
+        .col-no    { width: 7.5%; }
+        .col-desc  { width: 52.5%; }
+        .col-qty   { width: 10%; }
+        .col-unit  { width: 14.5%; }
+        .col-total { width: 15.5%; }
+
+        /* Open Table Body Area */
+        .items-body-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Vertical dividers spanning full body height (NO horizontal row lines) */
+        .vertical-dividers {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .vertical-dividers > div {
+            height: 100%;
+            border-right: 1px solid var(--line-soft);
+        }
+
+        .vertical-dividers > div:last-child {
+            border-right: none;
+        }
+
+        /* Centered Watermark inside the รายการ column */
+        .watermark-layer {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 7.5%;
+            width: 52.5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+        }
+
+        /* Rows container on top of watermark */
+        .items-rows-container {
+            position: relative;
+            z-index: 1;
+            padding-top: 3px;
+            width: 100%;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+            position: relative;
+            min-height: 26px;
+        }
+
+        .item-row > div {
+            padding: 1px 4px;
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+            font-size: 13px;
+            line-height: 1.42;
+        }
+
+        .row-delete-btn {
+            position: absolute;
+            right: -18px;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            font-size: 12px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.15s ease, background-color 0.15s ease;
+            z-index: 5;
+        }
+
+        .item-row:hover .row-delete-btn {
+            opacity: 1;
+        }
+
+        .row-delete-btn:hover {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        /* ==================== TABLE FOOTER / TOTALS ==================== */
+        .footer-totals-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            border-top: 1px solid var(--line-dark);
+            flex-shrink: 0;
+            background: #ffffff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-totals-table td {
+            border-right: 1px solid var(--line-dark);
+            border-bottom: 1px solid var(--line-dark);
+            vertical-align: middle;
+            padding: 0 6px;
+        }
+
+        .footer-totals-table td:last-child {
+            border-right: none;
+        }
+
+        .footer-totals-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .sum-row-1 { height: 9mm; }
+        .sum-row-2 { height: 9mm; }
+        .sum-row-3 { height: 8.5mm; }
+
+        /* ==================== BOTTOM SIGNATURE BOXES ==================== */
+        .signature-row {
+            margin-top: 3mm;
+            display: flex;
+            gap: 3mm;
+            height: 40mm;
+            flex-shrink: 0;
+        }
+
+        .signature-box {
+            flex: 1;
+            border: 1.2px solid #222222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 4mm 6mm 3.5mm 6mm;
+            text-align: center;
+        }
+
+        .sig-line {
+            width: 52%;
+            border-bottom: 1px solid #555555;
+            margin-bottom: 5px;
+        }
+
+        .date-dots-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: baseline;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink-black);
+            margin-top: 3px;
+        }
+
+        .date-dots-input-wrap {
+            position: relative;
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        .date-dots-bg {
+            letter-spacing: 0.5px;
+            color: #333333;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .date-overlay-input {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 1px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: var(--ink-black);
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 0 2px;
+        }
+
+        .date-overlay-input:hover {
+            background: rgba(241, 90, 36, 0.08);
+        }
+
+        .date-overlay-input:focus {
+            background: rgba(255, 247, 237, 0.9);
+        }
+
+        /* ==================== TOAST ANIMATION ==================== */
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, 10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .toast-show {
+            animation: toastIn 0.2s ease-out forwards;
+        }
+
+        /* ==================== EXACT A4 PRINT / PDF STYLES ==================== */
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        @media print {
+            html, body {
+                width: 210mm !important;
+                height: 297mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+                overflow: hidden !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .a4-viewport {
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                overflow: hidden !important;
+            }
+
+            .a4-scale-box {
+                transform: none !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                margin: 0 !important;
+            }
+
+            .a4-page {
+                width: 210mm !important;
+                height: 297mm !important;
+                min-height: 297mm !important;
+                max-height: 297mm !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 12mm 13mm 10mm 13mm !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            .doc-input,
+            .doc-textarea,
+            .date-overlay-input {
+                border-color: transparent !important;
+                background-color: transparent !important;
+                box-shadow: none !important;
+            }
+
+            .doc-input::placeholder,
+            .doc-textarea::placeholder {
+                color: transparent !important;
+            }
+
+            .row-delete-btn {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== FLOATING TOP TOOLBAR (SCREEN ONLY) ==================== -->
+    <header class="no-print sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-300 shadow-sm">
+        <div class="max-w-[1040px] mx-auto px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+
+            <!-- Left: Mini Brand & Helper Note -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0">
+                    <svg viewBox="-2 0 148 152" class="w-5 h-5" aria-hidden="true">
+                        <path fill="#F15A24" d="M 0,75 L 67.1,8.1 Q 73.1,4.2 77.3,8.1 L 136.3,68.5 Q 143.2,75 136.3,82.3 L 72.2,148.4 L 50.4,125.5 L 98.3,77.4 Q 100.7,74.9 97.3,71.4 L 74.8,48.5 Q 71.5,46.5 69.1,49.5 L 45.3,72.8 Q 43.2,74.4 46.9,78.3 L 63.4,94.9 Q 65.1,95.9 63.1,98.5 L 44.6,116.7 Q 43.3,118.7 39.5,115.0 L 0,75 Z"/>
+                    </svg>
+                </div>
+                <div class="leading-tight">
+                    <div class="font-prompt font-bold text-gray-900 text-xs sm:text-sm">
+                        ใบเสนอราคา D-SIGNAGE (แบบฟอร์มต้นฉบับ A4)
+                    </div>
+                    <div class="text-[11px] text-gray-500">
+                        คลิกพิมพ์ข้อความลงบนใบเสนอราคาได้เลย ช่องที่เว้นว่างจะไม่แสดงข้อความตัวอย่างตอนพิมพ์
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Action Buttons -->
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <!-- + เพิ่มรายการ -->
+                <button type="button" onclick="addRow(true)"
+                    class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 text-xs font-semibold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus text-[#F15A24]"></i>
+                    <span>เพิ่มรายการ</span>
+                </button>
+
+                <!-- VAT Toggle -->
+                <label class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-300 text-gray-800 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer select-none">
+                    <input type="checkbox" id="vatToggle" checked onchange="recalculateTotals()" class="w-3.5 h-3.5 accent-[#F15A24] rounded cursor-pointer">
+                    <span>คิด Vat 7%</span>
+                </label>
+
+                <!-- เติมวันที่วันนี้ -->
+                <button type="button" onclick="fillTodayThaiDate()"
+                    class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white hover:bg-orange-50 border border-gray-300 hover:border-orange-300 text-gray-700 hover:text-[#F15A24] text-xs font-semibold transition flex items-center gap-1.5"
+                    title="เติมวันที่ปัจจุบัน (พ.ศ.) ลงในช่องวันที่">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>เติมวันที่วันนี้</span>
+                </button>
+
+                <!-- ล้างข้อมูลลูกค้า/รายการ -->
+                <button type="button" onclick="openClearModal()"
+                    class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white hover:bg-red-50 border border-gray-300 hover:border-red-300 text-gray-700 hover:text-red-600 text-xs font-semibold transition flex items-center gap-1.5"
+                    title="ล้างข้อมูลลูกค้าและรายการสินค้า เพื่อออกใบใหม่">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span class="hidden md:inline">ล้างข้อมูลลูกค้า/รายการ</span>
+                    <span class="md:hidden">ล้างใบใหม่</span>
+                </button>
+
+                <!-- Primary Orange Print / Save PDF Button -->
+                <button type="button" onclick="printQuotation()"
+                    class="px-3.5 sm:px-4 py-1.5 rounded-lg bg-[#F15A24] hover:bg-[#d94d1b] text-white text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 shadow-md shadow-orange-500/20">
+                    <i class="fa-solid fa-print"></i>
+                    <span>พิมพ์ / บันทึก PDF (A4)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== A4 WORKSPACE ==================== -->
+    <main class="a4-viewport" id="a4Viewport">
+        <div class="a4-scale-box" id="a4ScaleBox">
+
+            <!-- ==================== EXACT A4 QUOTATION SHEET (210mm x 297mm) ==================== -->
+            <article class="a4-page" id="a4Page">
+
+                <!-- 1. HEADER SECTION (Logo Left + Company Info Right) -->
+                <div class="flex items-start shrink-0" style="padding-top: 1mm;">
+                    <!-- Left: D-SIGNAGE Logo Block (~36mm, centered) -->
+                    <div class="flex flex-col items-center justify-center shrink-0" style="width: 36mm;">
+                        <svg viewBox="-2 0 148 152" width="54" height="54" aria-label="D-SIGNAGE Logo">
+                            <path fill="#F15A24" d="M 0,75 L 67.1,8.1 Q 73.1,4.2 77.3,8.1 L 136.3,68.5 Q 143.2,75 136.3,82.3 L 72.2,148.4 L 50.4,125.5 L 98.3,77.4 Q 100.7,74.9 97.3,71.4 L 74.8,48.5 Q 71.5,46.5 69.1,49.5 L 45.3,72.8 Q 43.2,74.4 46.9,78.3 L 63.4,94.9 Q 65.1,95.9 63.1,98.5 L 44.6,116.7 Q 43.3,118.7 39.5,115.0 L 0,75 Z"/>
+                        </svg>
+                        <div class="font-logo font-bold uppercase text-[#1a1a1a] leading-none mt-1"
+                             style="font-size: 14px; letter-spacing: 0.5px;">
+                            D-SIGNAGE
+                        </div>
+                    </div>
+
+                    <!-- Right: Company Info (~12mm gap from logo) -->
+                    <div class="flex-1 min-w-0" style="margin-left: 11mm; padding-top: 1.5mm;">
+                        <!-- Line 1: Company Name + Branch -->
+                        <div class="flex items-baseline flex-wrap gap-x-1.5 leading-tight mb-0.5">
+                            <input type="text" id="compName"
+                                class="doc-input font-prompt !w-auto inline-block text-[#111111]"
+                                style="font-size: 21px; font-weight: 800; width: 212px;"
+                                value="หจก.ดี-ไซน์เนจ 59"
+                                oninput="autoWidthInput(this); saveCompanySettings();">
+                            <input type="text" id="compBranch"
+                                class="doc-input font-prompt !w-auto inline-block text-[#111111]"
+                                style="font-size: 13.5px; font-weight: 700; width: 120px;"
+                                value="(สำนักงานใหญ่)"
+                                oninput="autoWidthInput(this); saveCompanySettings();">
+                        </div>
+
+                        <!-- Line 2: Address -->
+                        <div class="leading-snug">
+                            <input type="text" id="compAddress"
+                                class="doc-input font-prompt text-[#111111]"
+                                style="font-size: 11.5px; font-weight: 700;"
+                                value="59/25 หมู่ที่ 5 ถ.เทพกระษัตรี ต.ศรีสุนทร อ.ถลาง จ.ภูเก็ต 83110"
+                                oninput="saveCompanySettings()">
+                        </div>
+
+                        <!-- Line 3: Phone & Tax ID -->
+                        <div class="flex items-center flex-wrap gap-x-5 leading-snug mt-0.5 font-prompt text-[#111111]"
+                             style="font-size: 11.5px; font-weight: 700;">
+                            <div class="flex items-center">
+                                <span class="whitespace-nowrap">โทร.</span>
+                                <input type="text" id="compPhone"
+                                    class="doc-input !w-[162px] ml-0.5"
+                                    value="076-510477, 081-3671816"
+                                    oninput="saveCompanySettings()">
+                            </div>
+                            <div class="flex items-center">
+                                <span class="whitespace-nowrap">เลขประจำตัวผู้เสียภาษี</span>
+                                <input type="text" id="compTaxId"
+                                    class="doc-input !w-[122px] ml-1"
+                                    value="083355900224"
+                                    title="คลิกแก้ไขเลขประจำตัวผู้เสียภาษีได้ (บันทึกอัตโนมัติ)"
+                                    oninput="saveCompanySettings()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. DOCUMENT TITLE -->
+                <div class="text-center shrink-0 font-prompt" style="margin-top: 5.5mm; margin-bottom: 5.5mm;">
+                    <h1 class="m-0 leading-none text-[#111111]" style="font-size: 22px; font-weight: 800;">
+                        ใบเสนอราคา
+                    </h1>
+                </div>
+
+                <!-- 3. TOP INFO GRID (2 Separate Boxes Side-by-Side) -->
+                <div class="top-info-row">
+                    <!-- Left Box (~62%): Freeform Customer Details -->
+                    <div class="customer-box">
+                        <textarea id="customerInfo" class="doc-textarea customer-textarea"
+                            placeholder="พิมพ์ข้อมูลลูกค้า เช่น&#10;เรียน / ชื่อบริษัท / ชื่อลูกค้า&#10;ที่อยู่ลูกค้า&#10;โทร. / เลขประจำตัวผู้เสียภาษี"></textarea>
+                    </div>
+
+                    <!-- Right Box (~36%): 3x2 Structured Terms Table -->
+                    <div class="terms-box">
+                        <table class="terms-table">
+                            <colgroup>
+                                <col style="width: 46%;">
+                                <col style="width: 54%;">
+                            </colgroup>
+                            <tbody>
+                                <!-- Row 1: Editable Date / Doc No -->
+                                <tr style="height: 30%;">
+                                    <td>
+                                        <input type="text" id="topRightLabel"
+                                            class="doc-input text-center font-prompt font-semibold"
+                                            style="font-size: 11px;"
+                                            placeholder="วันที่ / เลขที่">
+                                    </td>
+                                    <td>
+                                        <input type="text" id="topRightValue"
+                                            class="doc-input text-center font-prompt"
+                                            style="font-size: 11px;"
+                                            placeholder="วว/ดด/ปปปป">
+                                    </td>
+                                </tr>
+                                <!-- Row 2: Payment Terms -->
+                                <tr style="height: 38%;">
+                                    <td class="font-prompt font-semibold whitespace-nowrap" style="font-size: 11px;">
+                                        เงื่อนไขการชำระเงิน
+                                    </td>
+                                    <td>
+                                        <textarea id="paymentTerms" rows="2"
+                                            class="doc-textarea text-center font-prompt leading-tight"
+                                            style="font-size: 10.5px;"
+                                            oninput="saveCompanySettings()">มัดจำ 50% วันที่ตกลงสั่งทำ
+ส่วนที่เหลือเมื่องานเสร็จ</textarea>
+                                    </td>
+                                </tr>
+                                <!-- Row 3: Delivery Terms (FIXED complete Thai word) -->
+                                <tr style="height: 32%;">
+                                    <td class="font-prompt font-semibold whitespace-nowrap" style="font-size: 11px;">
+                                        กำหนดส่งมอบสินค้า
+                                    </td>
+                                    <td>
+                                        <input type="text" id="deliveryTerms"
+                                            class="doc-input text-center font-prompt"
+                                            style="font-size: 11px;"
+                                            value="ไม่เกิน 15 วัน"
+                                            oninput="saveCompanySettings()">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. MAIN ITEMS TABLE & INTEGRATED FOOTER -->
+                <div class="main-table-box">
+                    <!-- Table Header (5 Columns, FIXED Thai labels) -->
+                    <div class="items-header">
+                        <div class="col-no">ลำดับ</div>
+                        <div class="col-desc">รายการ</div>
+                        <div class="col-qty">จำนวน</div>
+                        <div class="col-unit">ราคาต่อหน่วย</div>
+                        <div class="col-total">จำนวนเงิน</div>
+                    </div>
+
+                    <!-- Open Table Body Area (Tall, no horizontal row lines) -->
+                    <div class="items-body-area">
+                        <!-- Continuous Vertical Column Lines -->
+                        <div class="vertical-dividers">
+                            <div class="col-no"></div>
+                            <div class="col-desc"></div>
+                            <div class="col-qty"></div>
+                            <div class="col-unit"></div>
+                            <div class="col-total"></div>
+                        </div>
+
+                        <!-- Watermark centered inside the รายการ column -->
+                        <div class="watermark-layer" aria-hidden="true">
+                            <svg viewBox="-2 0 148 152" width="175" height="175" style="opacity: 0.13;">
+                                <path fill="#F15A24" d="M 0,75 L 67.1,8.1 Q 73.1,4.2 77.3,8.1 L 136.3,68.5 Q 143.2,75 136.3,82.3 L 72.2,148.4 L 50.4,125.5 L 98.3,77.4 Q 100.7,74.9 97.3,71.4 L 74.8,48.5 Q 71.5,46.5 69.1,49.5 L 45.3,72.8 Q 43.2,74.4 46.9,78.3 L 63.4,94.9 Q 65.1,95.9 63.1,98.5 L 44.6,116.7 Q 43.3,118.7 39.5,115.0 L 0,75 Z"/>
+                            </svg>
+                            <div class="font-logo uppercase"
+                                 style="font-size: 36px; font-weight: 700; color: #9ca3af; opacity: 0.22; letter-spacing: 2px; margin-top: 4px; line-height: 1;">
+                                D-SIGNAGE
+                            </div>
+                        </div>
+
+                        <!-- Editable Item Rows -->
+                        <div class="items-rows-container" id="itemsContainer">
+                            <!-- Rows injected dynamically by JS -->
+                        </div>
+
+                        <!-- Subtle Inline "+ เพิ่มแถว" button on screen only -->
+                        <div class="no-print relative z-10 px-2 pt-1.5" style="margin-left: 7.5%;">
+                            <button type="button" onclick="addRow(true)"
+                                class="text-[11px] text-gray-400 hover:text-[#F15A24] hover:bg-orange-50/80 px-2 py-0.5 rounded transition inline-flex items-center gap-1">
+                                <i class="fa-solid fa-plus text-[10px]"></i>
+                                <span>เพิ่มแถวรายการ</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table Footer / Notes & Totals (Exact 3-row alignment) -->
+                    <table class="footer-totals-table">
+                        <colgroup>
+                            <col style="width: 70%;">   <!-- 7.5% + 52.5% + 10% -->
+                            <col style="width: 14.5%;"> <!-- ราคาต่อหน่วย -->
+                            <col style="width: 15.5%;"> <!-- จำนวนเงิน -->
+                        </colgroup>
+                        <tbody>
+                            <!-- Row 1: Notes (rowspan=2) | รวมเงิน | Subtotal -->
+                            <tr class="sum-row-1">
+                                <td rowspan="2" class="align-top !p-1.5">
+                                    <div class="flex items-start gap-2 h-full">
+                                        <span class="font-prompt font-semibold whitespace-nowrap text-[#111111]"
+                                              style="font-size: 11.5px; padding: 2px 2px 0 4px;">
+                                            หมายเหตุ
+                                        </span>
+                                        <div class="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+                                            <input type="text" id="noteLine1"
+                                                class="doc-input font-prompt font-bold"
+                                                style="color: #E84A18; font-size: 11px; line-height: 1.35;"
+                                                value="* มัดจำ 50 % ในวันตกลงสั่งทำ"
+                                                oninput="saveCompanySettings()">
+                                            <input type="text" id="noteLine2"
+                                                class="doc-input font-prompt font-medium"
+                                                style="color: #111111; font-size: 11px; line-height: 1.35;"
+                                                value="* ธ.กรุงศรี 6111111453 นายณรงค์ สุวรรณรัตน์"
+                                                oninput="saveCompanySettings()">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center font-prompt font-bold text-[#111111] whitespace-nowrap" style="font-size: 11.5px;">
+                                    รวมเงิน
+                                </td>
+                                <td id="subtotalCell" class="text-right font-sarabun font-semibold text-[#111111] tabular-nums whitespace-nowrap" style="font-size: 13px;">
+                                </td>
+                            </tr>
+
+                            <!-- Row 2: Vat 7% | VAT Amount -->
+                            <tr class="sum-row-2">
+                                <td class="text-center font-prompt font-bold text-[#111111] whitespace-nowrap" style="font-size: 11.5px;">
+                                    Vat 7%
+                                </td>
+                                <td id="vatCell" class="text-right font-sarabun font-semibold text-[#111111] tabular-nums whitespace-nowrap" style="font-size: 13px;">
+                                </td>
+                            </tr>
+
+                            <!-- Row 3: Thai Baht Text | รวมราคาทั้งสิ้น | Grand Total -->
+                            <tr class="sum-row-3">
+                                <td class="!px-2">
+                                    <input type="text" id="bahtTextInput"
+                                        class="doc-input text-center font-prompt font-semibold text-[#111111]"
+                                        style="font-size: 11.5px;"
+                                        placeholder=""
+                                        oninput="bahtTextManuallyEdited = true">
+                                </td>
+                                <td class="text-center font-prompt font-bold text-[#111111] whitespace-nowrap" style="font-size: 11.5px;">
+                                    รวมราคาทั้งสิ้น
+                                </td>
+                                <td id="grandTotalCell" class="text-right font-sarabun font-bold text-[#111111] tabular-nums whitespace-nowrap" style="font-size: 13.5px;">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 5. BOTTOM SIGNATURE SECTION (2 Separate Boxes Side-by-Side) -->
+                <div class="signature-row">
+                    <!-- Left Box: ผู้อนุมัติ -->
+                    <div class="signature-box">
+                        <div class="sig-line"></div>
+                        <div class="h-4"></div>
+                        <div class="font-prompt font-bold text-[#111111]" style="font-size: 12px;">
+                            ผู้อนุมัติ
+                        </div>
+                        <div class="date-dots-wrap font-prompt">
+                            <span>วันที่</span>
+                            <span class="date-dots-input-wrap">
+                                <span class="date-dots-bg">........................................</span>
+                                <input type="text" id="approverDate" class="date-overlay-input" aria-label="วันที่ผู้อนุมัติ">
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Right Box: ผู้เสนอราคา -->
+                    <div class="signature-box">
+                        <div class="sig-line"></div>
+                        <div class="w-full flex justify-center">
+                            <input type="text" id="proposerName"
+                                class="doc-input text-center font-prompt font-bold text-[#111111] !w-[85%]"
+                                style="font-size: 12px;"
+                                value="นางสาวปรียานุช เชษฐพันธ์"
+                                oninput="saveCompanySettings()">
+                        </div>
+                        <div class="font-prompt font-bold text-[#111111]" style="font-size: 12px;">
+                            ผู้เสนอราคา
+                        </div>
+                        <div class="date-dots-wrap font-prompt">
+                            <span>วันที่</span>
+                            <span class="date-dots-input-wrap">
+                                <span class="date-dots-bg">........................................</span>
+                                <input type="text" id="proposerDate" class="date-overlay-input" aria-label="วันที่ผู้เสนอราคา">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </article>
+        </div>
+    </main>
+
+    <!-- ==================== CUSTOM CONFIRMATION MODAL (NO alert/confirm) ==================== -->
+    <div id="clearModal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-[2px] p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-gray-200">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-rotate-left text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-prompt font-bold text-gray-900 text-base">ล้างข้อมูลลูกค้าและรายการสินค้า?</h3>
+                    <p class="text-xs text-gray-500">เพื่อเริ่มต้นกรอกใบเสนอราคาใบใหม่</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-5 leading-relaxed">
+                ข้อมูลร้านค้า, เลขประจำตัวผู้เสียภาษี, เงื่อนไขการชำระเงิน, หมายเหตุ และชื่อผู้เสนอราคาจะยังคงอยู่เหมือนเดิมครับ
+            </p>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeClearModal()"
+                    class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs sm:text-sm font-semibold transition">
+                    ยกเลิก
+                </button>
+                <button type="button" onclick="confirmClearQuote()"
+                    class="px-4 py-2 rounded-lg bg-[#F15A24] hover:bg-[#d94d1b] text-white text-xs sm:text-sm font-semibold transition shadow-sm">
+                    ยืนยันล้างข้อมูล
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TOAST NOTIFICATION ==================== -->
+    <div id="toast" class="no-print fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2 rounded-xl bg-gray-900 text-white text-xs sm:text-sm font-medium shadow-xl items-center gap-2">
+        <i class="fa-solid fa-circle-check text-[#F15A24]"></i>
+        <span id="toastText">ดำเนินการเรียบร้อย</span>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        /* =====================================================================
+         * 1. PERSISTENT COMPANY SETTINGS (localStorage)
+         * ===================================================================== */
+        const STORAGE_KEY = 'dsignage_exact_replica_settings_v1';
+
+        const DEFAULT_SETTINGS = {
+            compName: 'หจก.ดี-ไซน์เนจ 59',
+            compBranch: '(สำนักงานใหญ่)',
+            compAddress: '59/25 หมู่ที่ 5 ถ.เทพกระษัตรี ต.ศรีสุนทร อ.ถลาง จ.ภูเก็ต 83110',
+            compPhone: '076-510477, 081-3671816',
+            compTaxId: '083355900224',
+            paymentTerms: 'มัดจำ 50% วันที่ตกลงสั่งทำ\nส่วนที่เหลือเมื่องานเสร็จ',
+            deliveryTerms: 'ไม่เกิน 15 วัน',
+            noteLine1: '* มัดจำ 50 % ในวันตกลงสั่งทำ',
+            noteLine2: '* ธ.กรุงศรี 6111111453 นายณรงค์ สุวรรณรัตน์',
+            proposerName: 'นางสาวปรียานุช เชษฐพันธ์'
+        };
+
+        let bahtTextManuallyEdited = false;
+
+        /* =====================================================================
+         * 2. INITIALIZATION
+         * ===================================================================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCompanySettings();
+            initRows();
+            recalculateTotals();
+            updateA4Scale();
+            window.addEventListener('resize', updateA4Scale);
+        });
+
+        function loadCompanySettings() {
+            let data = { ...DEFAULT_SETTINGS };
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    data = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+                }
+            } catch (e) {
+                data = { ...DEFAULT_SETTINGS };
+            }
+
+            document.getElementById('compName').value = data.compName;
+            document.getElementById('compBranch').value = data.compBranch;
+            document.getElementById('compAddress').value = data.compAddress;
+            document.getElementById('compPhone').value = data.compPhone;
+            document.getElementById('compTaxId').value = data.compTaxId;
+            document.getElementById('paymentTerms').value = data.paymentTerms;
+            document.getElementById('deliveryTerms').value = data.deliveryTerms;
+            document.getElementById('noteLine1').value = data.noteLine1;
+            document.getElementById('noteLine2').value = data.noteLine2;
+            document.getElementById('proposerName').value = data.proposerName;
+
+            autoWidthInput(document.getElementById('compName'));
+            autoWidthInput(document.getElementById('compBranch'));
+        }
+
+        function saveCompanySettings() {
+            const payload = {
+                compName: document.getElementById('compName').value,
+                compBranch: document.getElementById('compBranch').value,
+                compAddress: document.getElementById('compAddress').value,
+                compPhone: document.getElementById('compPhone').value,
+                compTaxId: document.getElementById('compTaxId').value,
+                paymentTerms: document.getElementById('paymentTerms').value,
+                deliveryTerms: document.getElementById('deliveryTerms').value,
+                noteLine1: document.getElementById('noteLine1').value,
+                noteLine2: document.getElementById('noteLine2').value,
+                proposerName: document.getElementById('proposerName').value
+            };
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                // Ignore storage quota errors
+            }
+        }
+
+        /* =====================================================================
+         * 3. DYNAMIC ITEM ROWS (ADD / DELETE / AUTO-CALC)
+         * ===================================================================== */
+        function initRows() {
+            const container = document.getElementById('itemsContainer');
+            container.innerHTML = '';
+            // Start with 1 clean empty row ready for typing
+            addRow(false);
+        }
+
+        function addRow(focusDesc = false) {
+            const container = document.getElementById('itemsContainer');
+            const row = document.createElement('div');
+            row.className = 'item-row';
+
+            row.innerHTML = `
+                <!-- 1. ลำดับ (7.5%) -->
+                <div class="col-no">
+                    <input type="text"
+                        class="item-no doc-input text-center tabular-nums"
+                        data-manual="false"
+                        oninput="this.dataset.manual = this.value.trim() !== '' ? 'true' : 'false';">
+                </div>
+
+                <!-- 2. รายการ (52.5%) -->
+                <div class="col-desc">
+                    <textarea rows="1"
+                        class="item-desc doc-textarea"
+                        placeholder="พิมพ์รายละเอียดสินค้า / งานป้าย..."
+                        oninput="autoResizeTextarea(this); onRowInput(this);"></textarea>
+                </div>
+
+                <!-- 3. จำนวน (10%) -->
+                <div class="col-qty">
+                    <input type="text" inputmode="decimal"
+                        class="item-qty doc-input text-center tabular-nums"
+                        placeholder=""
+                        oninput="onRowCalcInput(this)"
+                        onblur="formatQtyOnBlur(this)">
+                </div>
+
+                <!-- 4. ราคาต่อหน่วย (14.5%) -->
+                <div class="col-unit">
+                    <input type="text" inputmode="decimal"
+                        class="item-price doc-input text-right tabular-nums"
+                        placeholder=""
+                        oninput="onRowCalcInput(this)"
+                        onfocus="unformatMoneyOnFocus(this)"
+                        onblur="formatMoneyOnBlur(this)">
+                </div>
+
+                <!-- 5. จำนวนเงิน (15.5%) -->
+                <div class="col-total">
+                    <input type="text" inputmode="decimal"
+                        class="item-total doc-input text-right tabular-nums font-medium"
+                        data-manual="false"
+                        placeholder=""
+                        oninput="onManualTotalInput(this)"
+                        onfocus="unformatMoneyOnFocus(this)"
+                        onblur="formatManualTotalOnBlur(this)">
+                </div>
+
+                <!-- Delete Row Button (Hover, Screen Only) -->
+                <button type="button" class="row-delete-btn no-print" onclick="deleteRow(this)" title="ลบแถวนี้">
+                    &times;
+                </button>
+            `;
+
+            container.appendChild(row);
+            updateAutoRowNumbers();
+
+            if (focusDesc) {
+                const descEl = row.querySelector('.item-desc');
+                if (descEl) descEl.focus();
+            }
+        }
+
+        function deleteRow(btn) {
+            const container = document.getElementById('itemsContainer');
+            const row = btn.closest('.item-row');
+            if (container.children.length <= 1) {
+                // Keep at least 1 row, just reset its fields
+                row.querySelector('.item-no').value = '';
+                row.querySelector('.item-no').dataset.manual = 'false';
+                const desc = row.querySelector('.item-desc');
+                desc.value = '';
+                autoResizeTextarea(desc);
+                row.querySelector('.item-qty').value = '';
+                row.querySelector('.item-price').value = '';
+                const total = row.querySelector('.item-total');
+                total.value = '';
+                total.dataset.manual = 'false';
+            } else {
+                row.remove();
+            }
+            bahtTextManuallyEdited = false;
+            updateAutoRowNumbers();
+            recalculateTotals();
+        }
+
+        function onRowInput(el) {
+            updateAutoRowNumbers();
+        }
+
+        function onRowCalcInput(el) {
+            const row = el.closest('.item-row');
+            const totalInput = row.querySelector('.item-total');
+            // Reset manual override when user edits qty or unit price
+            totalInput.dataset.manual = 'false';
+            bahtTextManuallyEdited = false;
+            updateAutoRowNumbers();
+            recalculateTotals();
+        }
+
+        function onManualTotalInput(el) {
+            el.dataset.manual = el.value.trim() !== '' ? 'true' : 'false';
+            bahtTextManuallyEdited = false;
+            updateAutoRowNumbers();
+            recalculateTotals();
+        }
+
+        function updateAutoRowNumbers() {
+            const rows = document.querySelectorAll('#itemsContainer .item-row');
+            let counter = 1;
+            rows.forEach((row) => {
+                const noInput = row.querySelector('.item-no');
+                const desc = row.querySelector('.item-desc').value.trim();
+                const qty = row.querySelector('.item-qty').value.trim();
+                const price = row.querySelector('.item-price').value.trim();
+                const total = row.querySelector('.item-total').value.trim();
+                const hasContent = desc !== '' || qty !== '' || price !== '' || total !== '';
+
+                if (noInput.dataset.manual !== 'true') {
+                    noInput.value = hasContent ? String(counter++) : '';
+                } else {
+                    counter++;
+                }
+            });
+        }
+
+        /* =====================================================================
+         * 4. NUMBER PARSING, FORMATTING & TOTALS CALCULATION
+         * ===================================================================== */
+        function parseNumeric(val) {
+            if (val === null || val === undefined) return NaN;
+            const cleaned = String(val).replace(/,/g, '').trim();
+            if (cleaned === '') return NaN;
+            const num = parseFloat(cleaned);
+            return isNaN(num) ? NaN : num;
+        }
+
+        function formatMoney(num) {
+            return (Number(num) || 0).toLocaleString('th-TH', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function unformatMoneyOnFocus(input) {
+            const num = parseNumeric(input.value);
+            if (!isNaN(num)) {
+                input.value = num;
+            }
+        }
+
+        function formatMoneyOnBlur(input) {
+            const num = parseNumeric(input.value);
+            if (!isNaN(num)) {
+                input.value = formatMoney(num);
+            } else {
+                input.value = '';
+            }
+            recalculateTotals();
+        }
+
+        function formatManualTotalOnBlur(input) {
+            const num = parseNumeric(input.value);
+            if (!isNaN(num)) {
+                input.value = formatMoney(num);
+            } else {
+                input.value = '';
+                input.dataset.manual = 'false';
+            }
+            recalculateTotals();
+        }
+
+        function formatQtyOnBlur(input) {
+            const num = parseNumeric(input.value);
+            if (!isNaN(num)) {
+                input.value = Number.isInteger(num)
+                    ? num.toLocaleString('th-TH')
+                    : num.toLocaleString('th-TH', { maximumFractionDigits: 2 });
+            }
+            recalculateTotals();
+        }
+
+        function recalculateTotals() {
+            const rows = document.querySelectorAll('#itemsContainer .item-row');
+            let subtotal = 0;
+            let hasAnyAmount = false;
+
+            rows.forEach((row) => {
+                const qty = parseNumeric(row.querySelector('.item-qty').value);
+                const price = parseNumeric(row.querySelector('.item-price').value);
+                const totalInput = row.querySelector('.item-total');
+
+                if (totalInput.dataset.manual === 'true') {
+                    const manualVal = parseNumeric(totalInput.value);
+                    if (!isNaN(manualVal)) {
+                        subtotal += manualVal;
+                        hasAnyAmount = true;
+                    }
+                } else if (!isNaN(qty) && !isNaN(price)) {
+                    const lineTotal = qty * price;
+                    totalInput.value = formatMoney(lineTotal);
+                    subtotal += lineTotal;
+                    hasAnyAmount = true;
+                } else {
+                    totalInput.value = '';
+                }
+            });
+
+            const includeVat = document.getElementById('vatToggle').checked;
+            const subtotalCell = document.getElementById('subtotalCell');
+            const vatCell = document.getElementById('vatCell');
+            const grandTotalCell = document.getElementById('grandTotalCell');
+            const bahtTextInput = document.getElementById('bahtTextInput');
+
+            if (!hasAnyAmount) {
+                subtotalCell.textContent = '';
+                vatCell.textContent = '';
+                grandTotalCell.textContent = '';
+                if (!bahtTextManuallyEdited) {
+                    bahtTextInput.value = '';
+                }
+                return;
+            }
+
+            const vatAmount = includeVat ? subtotal * 0.07 : 0;
+            const grandTotal = subtotal + vatAmount;
+
+            subtotalCell.textContent = formatMoney(subtotal);
+            vatCell.textContent = includeVat ? formatMoney(vatAmount) : '-';
+            grandTotalCell.textContent = formatMoney(grandTotal);
+
+            if (!bahtTextManuallyEdited) {
+                bahtTextInput.value = grandTotal > 0 ? `(${thaiBahtText(grandTotal)})` : '';
+            }
+        }
+
+        /* =====================================================================
+         * 5. ACCURATE THAI BAHT TEXT CONVERTER (BahtText)
+         * ===================================================================== */
+        function thaiBahtText(amount) {
+            if (isNaN(amount) || amount === null) return '';
+            const totalSatang = Math.round(Math.abs(amount) * 100);
+            if (totalSatang === 0) return 'ศูนย์บาทถ้วน';
+
+            const baht = Math.floor(totalSatang / 100);
+            const satang = totalSatang % 100;
+
+            const digits = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+            const positions = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน'];
+
+            function readSixDigits(numStr) {
+                let text = '';
+                const len = numStr.length;
+                for (let i = 0; i < len; i++) {
+                    const d = parseInt(numStr[i], 10);
+                    const pos = len - i - 1;
+                    if (d === 0) continue;
+
+                    if (pos === 0 && d === 1 && len > 1) {
+                        const hasLeadingNonZero = numStr.slice(0, len - 1).split('').some(c => c !== '0');
+                        text += hasLeadingNonZero ? 'เอ็ด' : 'หนึ่ง';
+                    } else if (pos === 1 && d === 2) {
+                        text += 'ยี่สิบ';
+                    } else if (pos === 1 && d === 1) {
+                        text += 'สิบ';
+                    } else {
+                        text += digits[d] + positions[pos];
+                    }
+                }
+                return text;
+            }
+
+            function readNumber(n) {
+                if (n === 0) return '';
+                const str = String(n);
+                const groups = [];
+                for (let i = str.length; i > 0; i -= 6) {
+                    groups.unshift(str.slice(Math.max(0, i - 6), i));
+                }
+                let result = '';
+                groups.forEach((grp, idx) => {
+                    const txt = readSixDigits(grp);
+                    const isLast = idx === groups.length - 1;
+                    if (txt) {
+                        result += txt + (isLast ? '' : 'ล้าน');
+                    } else if (!isLast && result !== '') {
+                        result += 'ล้าน';
+                    }
+                });
+                return result;
+            }
+
+            let out = amount < 0 ? 'ลบ' : '';
+            if (baht > 0) out += readNumber(baht) + 'บาท';
+            if (satang > 0) {
+                out += readNumber(satang) + 'สตางค์';
+            } else {
+                out += 'ถ้วน';
+            }
+            return out;
+        }
+
+        /* =====================================================================
+         * 6. DATE AUTO-FILL, UI SCALING & HELPERS
+         * ===================================================================== */
+        function fillTodayThaiDate() {
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2, '0');
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const y = now.getFullYear() + 543;
+            const formatted = `${d}/${m}/${y}`;
+
+            const labelEl = document.getElementById('topRightLabel');
+            const valEl = document.getElementById('topRightValue');
+            if (labelEl.value.trim() === '') {
+                labelEl.value = 'วันที่';
+            }
+            valEl.value = formatted;
+
+            const proposerDateEl = document.getElementById('proposerDate');
+            if (proposerDateEl.value.trim() === '') {
+                proposerDateEl.value = formatted;
+            }
+
+            showToast(`เติมวันที่ ${formatted} เรียบร้อยแล้ว`);
+        }
+
+        function autoResizeTextarea(el) {
+            if (!el) return;
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+
+        function autoWidthInput(el) {
+            if (!el) return;
+            // Measure text width using a hidden canvas so inline company header stays tight
+            const style = window.getComputedStyle(el);
+            const canvas = autoWidthInput._canvas || (autoWidthInput._canvas = document.createElement('canvas'));
+            const ctx = canvas.getContext('2d');
+            ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            const width = Math.ceil(ctx.measureText(el.value || ' ').width) + 14;
+            el.style.width = `${Math.max(40, width)}px`;
+        }
+
+        function updateA4Scale() {
+            const viewport = document.getElementById('a4Viewport');
+            const scaleBox = document.getElementById('a4ScaleBox');
+            const page = document.getElementById('a4Page');
+            if (!viewport || !scaleBox || !page) return;
+
+            const availableW = viewport.clientWidth - 24;
+            const pageW = page.offsetWidth || 794;
+            const pageH = page.offsetHeight || 1123;
+
+            const scale = Math.min(1, availableW / pageW);
+            scaleBox.style.transform = `scale(${scale})`;
+            scaleBox.style.height = `${Math.ceil(pageH * scale)}px`;
+        }
+
+        /* =====================================================================
+         * 7. CLEAR MODAL, PRINT & TOAST
+         * ===================================================================== */
+        function openClearModal() {
+            const modal = document.getElementById('clearModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeClearModal() {
+            const modal = document.getElementById('clearModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmClearQuote() {
+            document.getElementById('customerInfo').value = '';
+            document.getElementById('topRightLabel').value = '';
+            document.getElementById('topRightValue').value = '';
+            document.getElementById('approverDate').value = '';
+            document.getElementById('proposerDate').value = '';
+            bahtTextManuallyEdited = false;
+            document.getElementById('bahtTextInput').value = '';
+            initRows();
+            recalculateTotals();
+            closeClearModal();
+            showToast('ล้างข้อมูลลูกค้าและรายการสินค้าเรียบร้อยแล้ว');
+        }
+
+        function printQuotation() {
+            const originalTitle = document.title;
+            const custLine = (document.getElementById('customerInfo').value || '').split('\n')[0].trim();
+            const dateVal = (document.getElementById('topRightValue').value || '').trim().replace(/\//g, '-');
+            const parts = ['ใบเสนอราคา_D-SIGNAGE', custLine, dateVal].filter(Boolean);
+            document.title = parts.join('_');
+
+            window.print();
+
+            setTimeout(() => {
+                document.title = originalTitle;
+            }, 800);
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = msg;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex', 'toast-show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex', 'toast-show');
+            }, 2400);
+        }
+    </script>
+</body>
+</html>
