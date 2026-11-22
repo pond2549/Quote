@@ -5,95 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ใบเสนอราคา - หจก.ดี-ไซน์เนจ 59 (D-SIGNAGE)</title>
 
-    <!-- Tailwind CSS สำหรับแถบเครื่องมือ, Modal และ Loading Overlay -->
+    <!-- Tailwind CSS for Toolbar, Modal, and Loading Overlay -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Prompt (ภาษาไทยคมชัด ไม่ตัดสระ) & Chakra Petch (โลโก้ D-SIGNAGE) -->
+    <!-- Google Fonts: Prompt (400, 500, 600, 700) & Kanit for crisp Thai typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome Icons -->
+    <!-- Font Awesome Icons for Toolbar -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- Client-side PDF Generation Libraries (html2canvas 1.4.1 + jsPDF 2.5.1) -->
+    <!-- Client-side PDF Export Libraries: html2canvas v1.4.1 & jsPDF v2.5.1 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        /* ==================== BASE & DESIGN TOKENS ==================== */
+        /* ==================== BASE & WORKSPACE ==================== */
         :root {
             --brand-orange: #F15A24;
-            --note-orange: #E84E1B;
-            --ink-black: #111111;
+            --note-orange: #E84A18;
+            --ink-black: #000000;
             --line-dark: #333333;
-            --line-mid: #666666;
-            --line-soft: #999999;
+            --line-mid: #888888;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Prompt', sans-serif;
-            background-color: #e5e7eb;
-            color: var(--ink-black);
+        html, body {
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
+            background-color: #e5e7eb;
+            font-family: 'Prompt', sans-serif;
+            color: #000000;
             -webkit-font-smoothing: antialiased;
         }
 
-        .font-logo {
-            font-family: 'Chakra Petch', 'Prompt', sans-serif;
+        .font-kanit {
+            font-family: 'Kanit', 'Prompt', sans-serif;
         }
 
-        /* ==================== RESPONSIVE WORKSPACE WRAPPER ==================== */
-        /* ห่อหน้ากระดาษให้ย่อดูพอดีจอบนมือถือ/iPad โดยไม่บีบความกว้างจริงของ #quotation-paper */
-        .paper-viewport {
+        /* ==================== RESPONSIVE VIEWPORT CONTAINER ==================== */
+        /* On screens < 830px, allows smooth horizontal scrolling without distorting the 794px A4 sheet */
+        .sheet-viewport {
             width: 100%;
+            padding: 20px 16px 48px 16px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 18px 10px 48px 10px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            -webkit-overflow-scrolling: touch;
         }
 
-        .paper-scale-wrapper {
-            width: 794px;
-            transform-origin: top center;
-            transition: transform 0.15s ease-out;
-            flex-shrink: 0;
+        @media (max-width: 830px) {
+            .sheet-viewport {
+                justify-content: flex-start;
+                padding: 14px 12px 40px 12px;
+            }
         }
 
-        /* ==================== EXACT FIXED-PIXEL A4 PAPER (794px x 1123px) ==================== */
-        #quotation-paper {
+        /* ==================== EXACT FIXED A4 PIXEL GEOMETRY (794px x 1123px) ==================== */
+        .a4-sheet {
+            box-sizing: border-box;
             width: 794px;
             height: 1123px;
             min-width: 794px;
             min-height: 1123px;
             max-width: 794px;
             max-height: 1123px;
-            box-sizing: border-box;
-            padding: 38px 42px;
+            padding: 36px 40px;
             background: #ffffff;
-            position: relative;
             display: flex;
             flex-direction: column;
+            position: relative;
             overflow: hidden;
-            color: var(--ink-black);
+            flex-shrink: 0;
+            color: #000000;
             font-family: 'Prompt', sans-serif;
             box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.25), 0 4px 12px rgba(15, 23, 42, 0.08);
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
 
-        /* ==================== INLINE WYSIWYG INPUTS ==================== */
-        .doc-input,
-        .doc-textarea {
+        /* ==================== INLINE EDITABLE INPUTS ==================== */
+        .sheet-input,
+        .sheet-textarea {
             font-family: 'Prompt', sans-serif;
             background: transparent;
             border: 1px solid transparent;
@@ -103,49 +101,142 @@
             font-weight: inherit;
             line-height: inherit;
             letter-spacing: inherit;
-            padding: 2px 3px;
+            padding: 1px 3px;
             margin: 0;
             width: 100%;
             outline: none;
             transition: background-color 0.12s ease, border-color 0.12s ease;
         }
 
-        .doc-textarea {
+        .sheet-textarea {
             resize: none;
             overflow: hidden;
             display: block;
         }
 
-        .doc-input:hover,
-        .doc-textarea:hover {
+        .sheet-input:hover,
+        .sheet-textarea:hover {
             background-color: rgba(241, 90, 36, 0.05);
-            border-color: rgba(241, 90, 36, 0.22);
+            border-color: rgba(241, 90, 36, 0.25);
         }
 
-        .doc-input:focus,
-        .doc-textarea:focus {
+        .sheet-input:focus,
+        .sheet-textarea:focus {
             background-color: #fff7ed;
             border-color: var(--brand-orange);
         }
 
-        .doc-input::placeholder,
-        .doc-textarea::placeholder {
+        .sheet-input::placeholder,
+        .sheet-textarea::placeholder {
             color: #9ca3af;
             font-weight: 400;
         }
 
-        /* ==================== TOP INFO BOXES (57% / 41%) ==================== */
-        .top-info-row {
+        /* ==================== 1. HEADER SECTION ==================== */
+        .doc-header {
+            display: flex;
+            align-items: flex-start;
+            flex-shrink: 0;
+        }
+
+        .logo-block {
+            width: 132px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-wordmark {
+            font-family: 'Kanit', 'Prompt', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: 0.8px;
+            line-height: 1;
+            margin-top: 4px;
+        }
+
+        .company-block {
+            flex: 1;
+            min-width: 0;
+            margin-left: 26px;
+            padding-top: 2px;
+        }
+
+        .company-title-row {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+            line-height: 1.25;
+            margin-bottom: 3px;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .company-branch {
+            font-size: 14px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .company-address {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.45;
+        }
+
+        .company-contact-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.45;
+            margin-top: 1px;
+        }
+
+        .tax-id-input {
+            width: 128px;
+            display: inline-block;
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 0 3px;
+        }
+
+        /* ==================== 2. DOCUMENT TITLE ==================== */
+        .doc-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.25;
+            margin: 14px 0 12px 0;
+            flex-shrink: 0;
+        }
+
+        /* ==================== 3. TOP INFO SECTION (height: 102px) ==================== */
+        .top-info-section {
             display: flex;
             justify-content: space-between;
-            gap: 14px;
-            height: 118px;
+            gap: 10px;
+            height: 102px;
             flex-shrink: 0;
         }
 
         .customer-box {
-            width: 57%;
-            border: 2px solid var(--ink-black);
+            width: 60%;
+            height: 102px;
+            border: 2px solid #000000;
             display: flex;
             flex-direction: column;
         }
@@ -153,111 +244,123 @@
         .customer-textarea {
             width: 100%;
             height: 100%;
-            padding: 7px 10px;
-            font-size: 12.5px;
-            line-height: 1.55;
-            color: var(--ink-black);
+            padding: 6px 9px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #000000;
             border: none !important;
-            border-radius: 0;
         }
 
-        .terms-box {
-            width: 41%;
-            border: 2px solid var(--ink-black);
+        .meta-box {
+            width: 39%;
+            height: 102px;
+            border: 2px solid #000000;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
 
-        .terms-table {
+        .meta-row {
+            display: flex;
             width: 100%;
-            height: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
+            border-bottom: 1px solid #333333;
         }
 
-        .terms-table td {
-            border: 1px solid var(--line-dark);
-            vertical-align: middle;
+        .meta-row:last-child {
+            border-bottom: none;
+        }
+
+        .meta-row-1 { height: 30px; }
+        .meta-row-2 { height: 42px; }
+        .meta-row-3 { height: 26px; flex: 1; } /* Fills exact remaining inner height (total inner = 98px) */
+
+        .meta-cell-left {
+            width: 38%;
+            border-right: 1px solid #333333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            padding: 2px 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 0 3px;
+            white-space: nowrap;
         }
 
-        .terms-table tr:first-child td { border-top: none; }
-        .terms-table tr:last-child td { border-bottom: none; }
-        .terms-table td:first-child { border-left: none; }
-        .terms-table td:last-child { border-right: none; }
+        .meta-cell-right {
+            width: 62%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 11.5px;
+            padding: 0 4px;
+        }
 
-        /* ==================== MAIN QUOTATION TABLE (flex: 1) ==================== */
-        .main-table-box {
-            margin-top: 12px;
-            border: 2px solid var(--ink-black);
-            flex: 1;
+        /* ==================== 4. MAIN TABLE (DIV-BASED, NON-COLLAPSING) ==================== */
+        .main-table {
+            margin-top: 8px;
+            border: 2px solid #000000;
             display: flex;
             flex-direction: column;
-            min-height: 0;
-            position: relative;
-            background: #ffffff;
-        }
-
-        /* Header Row (5 Columns: 7% / 51% / 10% / 16% / 16%) */
-        .items-header {
-            display: flex;
-            height: 36px;
-            border-bottom: 2px solid var(--ink-black);
             flex-shrink: 0;
             background: #ffffff;
         }
 
-        .items-header > div {
+        /* Column widths: 7% / 51% / 10% / 16% / 16% */
+        .col-1 { width: 7%; }
+        .col-2 { width: 51%; }
+        .col-3 { width: 10%; }
+        .col-4 { width: 16%; }
+        .col-5 { width: 16%; }
+
+        /* Table Header Row (height: 30px) */
+        .table-header-row {
+            display: flex;
+            height: 30px;
+            border-bottom: 2px solid #000000;
+            background: #ffffff;
+            position: relative;
+        }
+
+        .table-header-cell {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 700;
-            color: var(--ink-black);
+            color: #000000;
             white-space: nowrap;
-            border-right: 1px solid var(--line-mid);
-            padding: 0 2px;
+            border-right: 1px solid #888888;
         }
 
-        .items-header > div:last-child {
+        .table-header-cell:last-child {
             border-right: none;
         }
 
-        .col-no    { width: 7%; }
-        .col-desc  { width: 51%; }
-        .col-qty   { width: 10%; }
-        .col-unit  { width: 16%; }
-        .col-total { width: 16%; }
-
-        /* Open Table Body Area (No horizontal row lines) */
+        /* Fixed-Height Div-Based Items Area (465px) */
         .items-body-area {
-            flex: 1;
-            min-height: 0;
+            height: 465px;
+            min-height: 465px;
+            max-height: 465px;
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background: #ffffff;
         }
 
-        .vertical-dividers {
+        /* 4 Full-Height Vertical Divider Lines at 7%, 58%, 68%, 84% */
+        .v-divider {
             position: absolute;
-            inset: 0;
-            display: flex;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #888888;
             pointer-events: none;
-            z-index: 0;
+            z-index: 2;
         }
 
-        .vertical-dividers > div {
-            height: 100%;
-            border-right: 1px solid var(--line-soft);
-        }
-
-        .vertical-dividers > div:last-child {
-            border-right: none;
-        }
-
-        /* Watermark centered inside รายการ column (left: 7%, width: 51%) */
-        .watermark-layer {
+        /* Centered Watermark inside รายการ column (left: 7%, width: 51%) */
+        .watermark-container {
             position: absolute;
             top: 0;
             bottom: 0;
@@ -269,19 +372,20 @@
             justify-content: center;
             pointer-events: none;
             user-select: none;
-            z-index: 0;
+            z-index: 1;
+            opacity: 0.13;
         }
 
         .watermark-hidden {
             display: none !important;
         }
 
-        /* Rows Container */
-        .items-rows-container {
+        /* Dynamic Item Rows Container on top of watermark */
+        .items-rows-layer {
             position: relative;
-            z-index: 1;
-            padding-top: 4px;
+            z-index: 3;
             width: 100%;
+            padding-top: 4px;
         }
 
         .item-row {
@@ -292,10 +396,11 @@
             min-height: 28px;
         }
 
-        .item-row > div {
+        .item-cell {
             padding: 2px 5px;
             font-size: 12.5px;
-            line-height: 1.5;
+            line-height: 1.45;
+            color: #000000;
         }
 
         .row-delete-btn {
@@ -308,7 +413,8 @@
             background: #fee2e2;
             color: #dc2626;
             border: 1px solid #fca5a5;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 700;
             line-height: 1;
             display: flex;
             align-items: center;
@@ -329,124 +435,182 @@
             color: #ffffff;
         }
 
-        /* ==================== INTEGRATED FOOTER / TOTALS (68% / 16% / 16%) ==================== */
-        .footer-totals-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            border-top: 1.5px solid var(--ink-black);
-            flex-shrink: 0;
-            background: #ffffff;
-            position: relative;
-            z-index: 2;
-        }
-
-        .footer-totals-table td {
-            border-right: 1px solid var(--line-dark);
-            border-bottom: 1px solid var(--line-dark);
-            vertical-align: middle;
-            padding: 0 7px;
-        }
-
-        .footer-totals-table td:last-child {
-            border-right: none;
-        }
-
-        .footer-totals-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .sum-row-1 { height: 34px; }
-        .sum-row-2 { height: 34px; }
-        .sum-row-3 { height: 34px; }
-
-        /* ==================== BOTTOM SIGNATURE BOXES (1.5px Border) ==================== */
-        .signature-row {
-            margin-top: 12px;
+        /* ==================== FOOTER SUMMARY (68% Left / 32% Right) ==================== */
+        .table-footer {
             display: flex;
-            gap: 14px;
-            height: 140px;
+            border-top: 1px solid #333333;
+            background: #ffffff;
+        }
+
+        .footer-left {
+            width: 68%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-section {
+            height: 64px;
+            padding: 6px 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .notes-label {
+            font-size: 12px;
+            font-weight: 700;
+            width: 62px;
+            flex-shrink: 0;
+            padding-top: 2px;
+            color: #000000;
+        }
+
+        .notes-lines {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .baht-text-section {
+            height: 30px;
+            border-top: 1px solid #333333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #000000;
+            padding: 0 8px;
+        }
+
+        .footer-right {
+            width: 32%;
+            border-left: 1px solid #333333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-row {
+            display: flex;
+            width: 100%;
+        }
+
+        .summary-row-1 { height: 32px; }
+        .summary-row-2 { height: 32px; border-top: 1px solid #333333; }
+        .summary-row-3 { height: 30px; border-top: 1px solid #333333; }
+
+        .summary-label {
+            width: 50%;
+            border-right: 1px solid #333333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #000000;
+            white-space: nowrap;
+        }
+
+        .summary-value {
+            width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #000000;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        /* ==================== 5. BOTTOM SIGNATURE SECTION (height: 132px) ==================== */
+        .signature-section {
+            margin-top: 10px;
+            display: flex;
+            gap: 12px;
+            height: 132px;
             flex-shrink: 0;
         }
 
         .signature-box {
             flex: 1;
-            border: 1.5px solid var(--ink-black);
+            border: 1.5px solid #000000;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: flex-end;
-            padding: 12px 18px 14px 18px;
+            align-items: center;
+            padding-bottom: 12px;
             text-align: center;
         }
 
-        .sig-line {
-            width: 56%;
-            border-bottom: 1px solid #444444;
-            margin-bottom: 6px;
+        .sig-line-left {
+            width: 190px;
+            border-bottom: 1px solid #555555;
+            margin-bottom: 18px;
         }
 
-        .date-dots-wrap {
-            position: relative;
-            display: inline-flex;
+        .sig-line-right {
+            width: 190px;
+            border-bottom: 1px solid #555555;
+            margin-bottom: 8px;
+        }
+
+        .sig-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.4;
+        }
+
+        .sig-date-row {
+            display: flex;
             align-items: baseline;
             justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--ink-black);
+            gap: 5px;
             margin-top: 4px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #000000;
         }
 
-        .date-dots-input-wrap {
-            position: relative;
-            display: inline-block;
-            margin-left: 5px;
-        }
-
-        .date-dots-bg {
-            letter-spacing: 0.4px;
-            color: #333333;
-            user-select: none;
-            pointer-events: none;
-        }
-
-        .date-overlay-input {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 2px;
-            width: 100%;
+        .dotted-date-input {
+            width: 145px;
             text-align: center;
-            font-family: 'Prompt', sans-serif;
-            font-size: 11.5px;
-            font-weight: 500;
-            line-height: 1.4;
-            color: var(--ink-black);
-            background: transparent;
             border: none;
+            border-bottom: 1.5px dotted #333333;
+            border-radius: 0;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 1.3;
+            padding: 0 4px 1px 4px;
+            background: transparent;
             outline: none;
-            padding: 0 2px;
         }
 
-        .date-overlay-input:hover {
-            background: rgba(241, 90, 36, 0.08);
+        .dotted-date-input:hover {
+            background-color: rgba(241, 90, 36, 0.05);
         }
 
-        .date-overlay-input:focus {
-            background: rgba(255, 247, 237, 0.92);
+        .dotted-date-input:focus {
+            background-color: #fff7ed;
+            border-bottom-color: var(--brand-orange);
         }
 
         /* ==================== TOAST ANIMATION ==================== */
-        @keyframes toastIn {
+        @keyframes toastSlideUp {
             from { opacity: 0; transform: translate(-50%, 10px); }
             to { opacity: 1; transform: translate(-50%, 0); }
         }
 
-        .toast-show {
-            animation: toastIn 0.2s ease-out forwards;
+        .toast-visible {
+            animation: toastSlideUp 0.2s ease-out forwards;
         }
 
-        /* ==================== EXACT A4 PRINT STYLES ==================== */
+        /* ==================== CLEAN @MEDIA PRINT RULES ==================== */
         @page {
             size: A4 portrait;
             margin: 0;
@@ -464,27 +628,19 @@
                 print-color-adjust: exact !important;
             }
 
-            .no-print {
+            .no-print,
+            .no-pdf {
                 display: none !important;
             }
 
-            .paper-viewport {
+            .sheet-viewport {
                 padding: 0 !important;
                 margin: 0 !important;
                 display: block !important;
-                width: 210mm !important;
-                height: 297mm !important;
                 overflow: hidden !important;
             }
 
-            .paper-scale-wrapper {
-                transform: none !important;
-                width: 210mm !important;
-                height: 297mm !important;
-                margin: 0 !important;
-            }
-
-            #quotation-paper {
+            .a4-sheet {
                 width: 210mm !important;
                 height: 297mm !important;
                 min-width: 210mm !important;
@@ -493,37 +649,30 @@
                 max-height: 297mm !important;
                 box-shadow: none !important;
                 margin: 0 !important;
-                padding: 10mm 11mm !important;
                 page-break-after: avoid !important;
                 page-break-inside: avoid !important;
             }
 
-            .doc-input,
-            .doc-textarea,
-            .date-overlay-input {
+            .sheet-input,
+            .sheet-textarea {
                 border-color: transparent !important;
-                background-color: transparent !important;
-                box-shadow: none !important;
+                background: transparent !important;
             }
 
-            .doc-input::placeholder,
-            .doc-textarea::placeholder {
+            .sheet-input::placeholder,
+            .sheet-textarea::placeholder,
+            .dotted-date-input::placeholder {
                 color: transparent !important;
-            }
-
-            .row-delete-btn {
-                display: none !important;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ==================== FLOATING TOP TOOLBAR (.no-print) ==================== -->
-    <header class="no-print sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-300 shadow-sm">
-        <div class="max-w-[1120px] mx-auto px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
-
-            <!-- Brand Mini Title -->
+    <!-- ==================== STICKY TOP TOOLBAR (.no-print) ==================== -->
+    <header class="no-print sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-300 shadow-sm">
+        <div class="max-w-[1140px] mx-auto px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+            <!-- Brand Info -->
             <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0">
                     <svg viewBox="-2 0 148 152" class="w-5 h-5" aria-hidden="true">
@@ -531,387 +680,262 @@
                     </svg>
                 </div>
                 <div class="leading-tight">
-                    <div class="font-bold text-gray-900 text-xs sm:text-sm">
-                        ใบเสนอราคา D-SIGNAGE (A4 ออนไลน์)
-                    </div>
-                    <div class="text-[11px] text-gray-500">
-                        โหลด PDF เต็มหน้า A4 เป๊ะ ไม่ตัดขอบ รองรับคอม มือถือ และ iPad
-                    </div>
+                    <div class="font-bold text-gray-900 text-xs sm:text-sm">ระบบออกใบเสนอราคา D-SIGNAGE</div>
+                    <div class="text-[11px] text-gray-500">ส่งออกไฟล์ PDF ขนาด A4 เป๊ะ ไม่ตัดขอบ รองรับทุกอุปกรณ์</div>
                 </div>
             </div>
 
-            <!-- Action Controls -->
+            <!-- Action Buttons & Toggles -->
             <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <!-- เพิ่มรายการ -->
-                <button type="button" onclick="addRow(true)"
+                <!-- + เพิ่มรายการ -->
+                <button type="button" onclick="addItemRow(true)"
                     class="px-2.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 text-xs font-semibold transition flex items-center gap-1.5">
                     <i class="fa-solid fa-plus text-[#F15A24]"></i>
                     <span>เพิ่มรายการ</span>
                 </button>
 
-                <!-- เปิด-ปิด VAT 7% -->
-                <label class="px-2.5 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-300 text-gray-800 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer select-none">
-                    <input type="checkbox" id="vatToggle" checked onchange="recalculateTotals()"
-                        class="w-3.5 h-3.5 accent-[#F15A24] rounded cursor-pointer">
-                    <span>VAT 7%</span>
-                </label>
-
-                <!-- เปิด-ปิด ลายน้ำ -->
-                <label class="px-2.5 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-300 text-gray-800 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer select-none">
-                    <input type="checkbox" id="watermarkToggle" checked onchange="toggleWatermark()"
-                        class="w-3.5 h-3.5 accent-[#F15A24] rounded cursor-pointer">
-                    <span>ลายน้ำ</span>
-                </label>
-
                 <!-- เติมวันที่วันนี้ (พ.ศ.) -->
                 <button type="button" onclick="fillTodayThaiDate()"
-                    class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-orange-50 border border-gray-300 hover:border-orange-300 text-gray-700 hover:text-[#F15A24] text-xs font-semibold transition flex items-center gap-1.5"
-                    title="เติมวันที่ปัจจุบัน (พ.ศ.) อัตโนมัติ">
+                    class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-orange-50 border border-gray-300 hover:border-orange-300 text-gray-700 hover:text-[#F15A24] text-xs font-semibold transition flex items-center gap-1.5">
                     <i class="fa-regular fa-calendar-check"></i>
                     <span>เติมวันที่วันนี้ (พ.ศ.)</span>
                 </button>
 
+                <!-- Checkbox คิด VAT 7% -->
+                <label class="px-2.5 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-300 text-gray-800 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer select-none">
+                    <input type="checkbox" id="vat-checkbox" checked onchange="recalculateTotals()"
+                        class="w-3.5 h-3.5 accent-[#F15A24] rounded cursor-pointer">
+                    <span>คิด VAT 7%</span>
+                </label>
+
+                <!-- Checkbox ลายน้ำ D-SIGNAGE -->
+                <label class="px-2.5 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-300 text-gray-800 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer select-none">
+                    <input type="checkbox" id="watermark-checkbox" checked onchange="toggleWatermark()"
+                        class="w-3.5 h-3.5 accent-[#F15A24] rounded cursor-pointer">
+                    <span>ลายน้ำ D-SIGNAGE</span>
+                </label>
+
                 <!-- ล้างข้อมูล -->
-                <button type="button" onclick="openClearModal()"
-                    class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-red-50 border border-gray-300 hover:border-red-300 text-gray-700 hover:text-red-600 text-xs font-semibold transition flex items-center gap-1.5"
-                    title="ล้างข้อมูลลูกค้าและรายการสินค้า">
+                <button type="button" onclick="openResetModal()"
+                    class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-red-50 border border-gray-300 hover:border-red-300 text-gray-700 hover:text-red-600 text-xs font-semibold transition flex items-center gap-1.5">
                     <i class="fa-solid fa-rotate-left"></i>
                     <span>ล้างข้อมูล</span>
                 </button>
 
-                <!-- ปุ่มรอง: พิมพ์ (Print) -->
-                <button type="button" onclick="printQuotation()"
+                <!-- Secondary Dark Button: พิมพ์ (Print) -->
+                <button type="button" onclick="printSheet()"
                     class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-900 text-white text-xs font-semibold transition flex items-center gap-1.5">
                     <i class="fa-solid fa-print"></i>
                     <span>พิมพ์ (Print)</span>
                 </button>
 
-                <!-- ปุ่มหลักสีส้ม: ดาวน์โหลด PDF (A4 เป๊ะ) -->
-                <button type="button" id="btnDownloadPdf" onclick="downloadPDF()"
-                    class="px-3.5 sm:px-4 py-1.5 rounded-lg bg-[#F15A24] hover:bg-[#d94d1b] disabled:opacity-70 disabled:cursor-wait text-white text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 shadow-md shadow-orange-500/25">
-                    <i id="pdfBtnIcon" class="fa-solid fa-file-pdf"></i>
-                    <span id="pdfBtnText">ดาวน์โหลด PDF (A4 เป๊ะ)</span>
+                <!-- Primary Orange Button: ดาวน์โหลด PDF (A4 เป๊ะ) -->
+                <button type="button" id="btn-export-pdf" onclick="exportPDF()"
+                    class="px-3.5 sm:px-4 py-1.5 rounded-lg bg-[#F15A24] hover:bg-[#d94d1b] disabled:opacity-60 disabled:cursor-wait text-white text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 shadow-md shadow-orange-500/25">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>ดาวน์โหลด PDF (A4 เป๊ะ)</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ==================== RESPONSIVE A4 WORKSPACE ==================== -->
-    <main class="paper-viewport" id="paperViewport">
-        <div class="paper-scale-wrapper" id="paperScaleWrapper">
+    <!-- ==================== A4 SHEET WORKSPACE ==================== -->
+    <main class="sheet-viewport">
+        <article id="a4-sheet" class="a4-sheet">
 
-            <!-- ==================== EXACT A4 SHEET (794px x 1123px) ==================== -->
-            <article id="quotation-paper">
+            <!-- ==================== 1. HEADER ==================== -->
+            <div class="doc-header">
+                <!-- Left: Orange Diamond-D SVG Logo + D-SIGNAGE -->
+                <div class="logo-block">
+                    <svg viewBox="-2 0 148 152" width="58" height="58" aria-label="D-SIGNAGE Logo">
+                        <path fill="#F15A24" d="M 0,75 L 67.1,8.1 Q 73.1,4.2 77.3,8.1 L 136.3,68.5 Q 143.2,75 136.3,82.3 L 72.2,148.4 L 50.4,125.5 L 98.3,77.4 Q 100.7,74.9 97.3,71.4 L 74.8,48.5 Q 71.5,46.5 69.1,49.5 L 45.3,72.8 Q 43.2,74.4 46.9,78.3 L 63.4,94.9 Q 65.1,95.9 63.1,98.5 L 44.6,116.7 Q 43.3,118.7 39.5,115.0 L 0,75 Z"/>
+                    </svg>
+                    <div class="logo-wordmark">D-SIGNAGE</div>
+                </div>
 
-                <!-- 1. HEADER SECTION (Logo Left + Company Info Right) -->
-                <div class="flex items-start shrink-0" style="padding-top: 2px;">
-                    <!-- Left: D-SIGNAGE Vector Logo Block -->
-                    <div class="flex flex-col items-center justify-center shrink-0" style="width: 132px;">
-                        <svg viewBox="-2 0 148 152" width="56" height="56" aria-label="D-SIGNAGE Logo">
+                <!-- Right: Company Info -->
+                <div class="company-block">
+                    <div class="company-title-row">
+                        <span class="company-name">หจก.ดี-ไซน์เนจ 59</span>
+                        <span class="company-branch">(สำนักงานใหญ่)</span>
+                    </div>
+                    <div class="company-address">
+                        59/25 หมู่ที่ 5 ถ.เทพกระษัตรี ต.ศรีสุนทร อ.ถลาง จ.ภูเก็ต 83110
+                    </div>
+                    <div class="company-contact-row">
+                        <span>โทร. 076-510477, 081-3671816</span>
+                        <span class="inline-flex items-center">
+                            <span>เลขประจำตัวผู้เสียภาษี</span>
+                            <input type="text" id="company-tax-id" class="sheet-input tax-id-input ml-1"
+                                value="083355900224" oninput="savePersistentSettings()"
+                                aria-label="เลขประจำตัวผู้เสียภาษี">
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 2. DOCUMENT TITLE ==================== -->
+            <h1 class="doc-title">ใบเสนอราคา</h1>
+
+            <!-- ==================== 3. TOP INFO SECTION ==================== -->
+            <div class="top-info-section">
+                <!-- Left Box (60%): Customer Details -->
+                <div class="customer-box">
+                    <textarea id="customer-info" class="sheet-textarea customer-textarea"
+                        placeholder="ชื่อลูกค้า / บริษัท / ที่อยู่..."></textarea>
+                </div>
+
+                <!-- Right Box (39%): 3 Rows (38% / 62%) -->
+                <div class="meta-box">
+                    <!-- Row 1 (height: 30px) -->
+                    <div class="meta-row meta-row-1">
+                        <div class="meta-cell-left">
+                            <input type="text" id="doc-label" class="sheet-input text-center font-bold"
+                                style="font-size: 11px;" placeholder="เลขที่ / วันที่">
+                        </div>
+                        <div class="meta-cell-right">
+                            <input type="text" id="doc-date" class="sheet-input text-center"
+                                style="font-size: 11.5px;" placeholder="วว/ดด/ปป">
+                        </div>
+                    </div>
+
+                    <!-- Row 2 (height: 42px) -->
+                    <div class="meta-row meta-row-2">
+                        <div class="meta-cell-left">เงื่อนไขการชำระเงิน</div>
+                        <div class="meta-cell-right">
+                            <textarea id="payment-terms" rows="2" class="sheet-textarea text-center"
+                                style="font-size: 11.5px; line-height: 1.35;"
+                                oninput="savePersistentSettings()">มัดจำ 50% วันที่ตกลงสั่งทำ
+ส่วนที่เหลือเมื่องานเสร็จ</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Row 3 (height: 30px) -->
+                    <div class="meta-row meta-row-3">
+                        <div class="meta-cell-left">กำหนดส่งมอบสินค้า</div>
+                        <div class="meta-cell-right">
+                            <input type="text" id="delivery-terms" class="sheet-input text-center"
+                                style="font-size: 11.5px;" value="ไม่เกิน 15 วัน"
+                                oninput="savePersistentSettings()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 4. MAIN ITEMS TABLE (DIV-BASED) ==================== -->
+            <div class="main-table">
+                <!-- Header Row (30px) -->
+                <div class="table-header-row">
+                    <div class="table-header-cell col-1">ลำดับ</div>
+                    <div class="table-header-cell col-2">รายการ</div>
+                    <div class="table-header-cell col-3">จำนวน</div>
+                    <div class="table-header-cell col-4">ราคาต่อหน่วย</div>
+                    <div class="table-header-cell col-5">จำนวนเงิน</div>
+                </div>
+
+                <!-- Fixed-Height Body Area (465px — NEVER collapses in html2canvas) -->
+                <div class="items-body-area">
+                    <!-- 4 Full-Height Vertical Dividers at 7%, 58%, 68%, 84% -->
+                    <div class="v-divider" style="left: 7%;"></div>
+                    <div class="v-divider" style="left: 58%;"></div>
+                    <div class="v-divider" style="left: 68%;"></div>
+                    <div class="v-divider" style="left: 84%;"></div>
+
+                    <!-- Centered D-SIGNAGE Watermark (left: 7%, width: 51%, z-index: 1, opacity: 0.13) -->
+                    <div id="watermark-container" class="watermark-container" aria-hidden="true">
+                        <svg viewBox="-2 0 148 152" width="175" height="175">
                             <path fill="#F15A24" d="M 0,75 L 67.1,8.1 Q 73.1,4.2 77.3,8.1 L 136.3,68.5 Q 143.2,75 136.3,82.3 L 72.2,148.4 L 50.4,125.5 L 98.3,77.4 Q 100.7,74.9 97.3,71.4 L 74.8,48.5 Q 71.5,46.5 69.1,49.5 L 45.3,72.8 Q 43.2,74.4 46.9,78.3 L 63.4,94.9 Q 65.1,95.9 63.1,98.5 L 44.6,116.7 Q 43.3,118.7 39.5,115.0 L 0,75 Z"/>
                         </svg>
-                        <div class="font-logo font-bold uppercase text-[#111111] leading-none"
-                             style="font-size: 14.5px; letter-spacing: 0.6px; margin-top: 4px;">
+                        <div class="font-kanit font-bold uppercase"
+                             style="font-size: 38px; color: #333333; letter-spacing: 2px; line-height: 1; margin-top: 6px;">
                             D-SIGNAGE
                         </div>
                     </div>
 
-                    <!-- Right: Company Details -->
-                    <div class="flex-1 min-w-0" style="margin-left: 34px; padding-top: 2px;">
-                        <!-- Line 1: Company Name + Branch -->
-                        <div class="flex items-baseline flex-wrap gap-x-2 leading-snug mb-0.5">
-                            <input type="text" id="compName"
-                                class="doc-input !w-auto inline-block text-[#111111]"
-                                style="font-size: 22px; font-weight: 800; line-height: 1.35; width: 225px;"
-                                value="หจก.ดี-ไซน์เนจ 59"
-                                oninput="autoWidthInput(this); saveCompanySettings();">
-                            <input type="text" id="compBranch"
-                                class="doc-input !w-auto inline-block text-[#111111]"
-                                style="font-size: 14px; font-weight: 700; line-height: 1.35; width: 126px;"
-                                value="(สำนักงานใหญ่)"
-                                oninput="autoWidthInput(this); saveCompanySettings();">
-                        </div>
+                    <!-- Dynamic Item Rows Container (z-index: 3) -->
+                    <div id="items-rows-container" class="items-rows-layer">
+                        <!-- Initial empty row injected by JS -->
+                    </div>
+                </div>
 
-                        <!-- Line 2: Address -->
-                        <div class="leading-snug">
-                            <input type="text" id="compAddress"
-                                class="doc-input text-[#111111]"
-                                style="font-size: 12px; font-weight: 700; line-height: 1.45;"
-                                value="59/25 หมู่ที่ 5 ถ.เทพกระษัตรี ต.ศรีสุนทร อ.ถลาง จ.ภูเก็ต 83110"
-                                oninput="saveCompanySettings()">
-                        </div>
-
-                        <!-- Line 3: Phone & Tax ID -->
-                        <div class="flex items-center flex-wrap gap-x-5 leading-snug mt-0.5 text-[#111111]"
-                             style="font-size: 12px; font-weight: 700; line-height: 1.45;">
-                            <div class="flex items-center">
-                                <span class="whitespace-nowrap">โทร.</span>
-                                <input type="text" id="compPhone"
-                                    class="doc-input !w-[168px] ml-1"
-                                    value="076-510477, 081-3671816"
-                                    oninput="saveCompanySettings()">
-                            </div>
-                            <div class="flex items-center">
-                                <span class="whitespace-nowrap">เลขประจำตัวผู้เสียภาษี</span>
-                                <input type="text" id="compTaxId"
-                                    class="doc-input !w-[126px] ml-1"
-                                    value="083355900224"
-                                    title="คลิกแก้ไขเลขประจำตัวผู้เสียภาษีได้"
-                                    oninput="saveCompanySettings()">
+                <!-- Footer Summary (68% Left / 32% Right) -->
+                <div class="table-footer">
+                    <!-- Left 68%: Notes + Thai Baht Text -->
+                    <div class="footer-left">
+                        <div class="notes-section">
+                            <div class="notes-label">หมายเหตุ</div>
+                            <div class="notes-lines">
+                                <input type="text" id="note-line-1" class="sheet-input font-bold"
+                                    style="color: #E84A18; font-size: 12px; line-height: 1.4;"
+                                    value="* มัดจำ 50 % ในวันตกลงสั่งทำ"
+                                    oninput="savePersistentSettings()">
+                                <input type="text" id="note-line-2" class="sheet-input"
+                                    style="color: #000000; font-size: 12px; line-height: 1.4;"
+                                    value="* ธ.กรุงศรี 6111111453 นายณรงค์ สุวรรณรัตน์"
+                                    oninput="savePersistentSettings()">
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- 2. DOCUMENT TITLE -->
-                <div class="text-center shrink-0" style="margin-top: 16px; margin-bottom: 16px;">
-                    <h1 class="m-0 leading-snug text-[#111111]" style="font-size: 22px; font-weight: 800;">
-                        ใบเสนอราคา
-                    </h1>
-                </div>
-
-                <!-- 3. TOP INFO BOXES (Left 57% Customer | Right 41% Terms Table) -->
-                <div class="top-info-row">
-                    <!-- Left Box: Customer Details -->
-                    <div class="customer-box">
-                        <textarea id="customerInfo" class="doc-textarea customer-textarea"
-                            placeholder="พิมพ์ข้อมูลลูกค้า เช่น&#10;เรียน / ชื่อบริษัท / ชื่อลูกค้า&#10;ที่อยู่ลูกค้า&#10;โทร. / เลขประจำตัวผู้เสียภาษี"></textarea>
+                        <div id="baht-text-display" class="baht-text-section"></div>
                     </div>
 
-                    <!-- Right Box: 3x2 Structured Terms Table (38% / 62%) -->
-                    <div class="terms-box">
-                        <table class="terms-table">
-                            <colgroup>
-                                <col style="width: 38%;">
-                                <col style="width: 62%;">
-                            </colgroup>
-                            <tbody>
-                                <!-- Row 1: Editable Date / Doc No -->
-                                <tr style="height: 30%;">
-                                    <td>
-                                        <input type="text" id="topRightLabel"
-                                            class="doc-input text-center font-semibold"
-                                            style="font-size: 11px; line-height: 1.4; white-space: nowrap;"
-                                            placeholder="วันที่ / เลขที่">
-                                    </td>
-                                    <td>
-                                        <input type="text" id="topRightValue"
-                                            class="doc-input text-center"
-                                            style="font-size: 11px; line-height: 1.4; white-space: nowrap;"
-                                            placeholder="วว/ดด/ปปปป">
-                                    </td>
-                                </tr>
-                                <!-- Row 2: Payment Terms (2 distinct lines so "ทำ" never wraps) -->
-                                <tr style="height: 40%;">
-                                    <td class="font-semibold whitespace-nowrap" style="font-size: 10.5px;">
-                                        เงื่อนไขการชำระเงิน
-                                    </td>
-                                    <td style="padding: 2px 3px;">
-                                        <div class="flex flex-col items-center justify-center">
-                                            <input type="text" id="paymentTermsLine1"
-                                                class="doc-input text-center whitespace-nowrap"
-                                                style="font-size: 10.5px; padding: 0 2px; line-height: 1.4;"
-                                                value="มัดจำ 50% วันที่ตกลงสั่งทำ"
-                                                oninput="saveCompanySettings()">
-                                            <input type="text" id="paymentTermsLine2"
-                                                class="doc-input text-center whitespace-nowrap"
-                                                style="font-size: 10.5px; padding: 0 2px; line-height: 1.4;"
-                                                value="ส่วนที่เหลือเมื่องานเสร็จ"
-                                                oninput="saveCompanySettings()">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Row 3: Delivery Terms -->
-                                <tr style="height: 30%;">
-                                    <td class="font-semibold whitespace-nowrap" style="font-size: 10.5px;">
-                                        กำหนดส่งมอบสินค้า
-                                    </td>
-                                    <td>
-                                        <input type="text" id="deliveryTerms"
-                                            class="doc-input text-center whitespace-nowrap"
-                                            style="font-size: 11px; line-height: 1.4;"
-                                            value="ไม่เกิน 15 วัน"
-                                            oninput="saveCompanySettings()">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 4. MAIN ITEMS TABLE & INTEGRATED FOOTER (flex: 1) -->
-                <div class="main-table-box">
-                    <!-- Table Header (5 Columns: 7% / 51% / 10% / 16% / 16%) -->
-                    <div class="items-header">
-                        <div class="col-no">ลำดับ</div>
-                        <div class="col-desc">รายการ</div>
-                        <div class="col-qty">จำนวน</div>
-                        <div class="col-unit">ราคาต่อหน่วย</div>
-                        <div class="col-total">จำนวนเงิน</div>
-                    </div>
-
-                    <!-- Open Table Body Area -->
-                    <div class="items-body-area">
-                        <!-- Vertical Column Dividers -->
-                        <div class="vertical-dividers">
-                            <div class="col-no"></div>
-                            <div class="col-desc"></div>
-                            <div class="col-qty"></div>
-                            <div class="col-unit"></div>
-                            <div class="col-total"></div>
+                    <!-- Right 32%: 3 Summary Rows (50% Label / 50% Value = 16% / 16%) -->
+                    <div class="footer-right">
+                        <div class="summary-row summary-row-1">
+                            <div class="summary-label">รวมเงิน</div>
+                            <div id="subtotal-display" class="summary-value"></div>
                         </div>
-
-                        <!-- Watermark centered inside รายการ column -->
-                        <div class="watermark-layer" id="watermarkLayer" aria-hidden="true">
-                            <svg viewBox="-2 0 148 152" width="170" height="170" style="opacity: 0.10;">
-                                <path fill="#F15A24" d="M 0,75 L 67.1,8.1 Q 73.1,4.2 77.3,8.1 L 136.3,68.5 Q 143.2,75 136.3,82.3 L 72.2,148.4 L 50.4,125.5 L 98.3,77.4 Q 100.7,74.9 97.3,71.4 L 74.8,48.5 Q 71.5,46.5 69.1,49.5 L 45.3,72.8 Q 43.2,74.4 46.9,78.3 L 63.4,94.9 Q 65.1,95.9 63.1,98.5 L 44.6,116.7 Q 43.3,118.7 39.5,115.0 L 0,75 Z"/>
-                            </svg>
-                            <div class="font-logo uppercase"
-                                 style="font-size: 35px; font-weight: 700; color: #9ca3af; opacity: 0.20; letter-spacing: 2px; margin-top: 6px; line-height: 1;">
-                                D-SIGNAGE
-                            </div>
+                        <div class="summary-row summary-row-2">
+                            <div class="summary-label">Vat 7%</div>
+                            <div id="vat-display" class="summary-value"></div>
                         </div>
-
-                        <!-- Editable Rows -->
-                        <div class="items-rows-container" id="itemsContainer">
-                            <!-- Rows injected by JS -->
-                        </div>
-
-                        <!-- Subtle Inline Add Row Button (.no-print) -->
-                        <div class="no-print relative z-10 px-2 pt-1.5" style="margin-left: 7%;">
-                            <button type="button" onclick="addRow(true)"
-                                class="text-[11px] text-gray-400 hover:text-[#F15A24] hover:bg-orange-50/80 px-2 py-0.5 rounded transition inline-flex items-center gap-1">
-                                <i class="fa-solid fa-plus text-[10px]"></i>
-                                <span>เพิ่มแถวรายการ</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Footer Totals Table (68% | 16% | 16%) -->
-                    <table class="footer-totals-table">
-                        <colgroup>
-                            <col style="width: 68%;"> <!-- 7% + 51% + 10% -->
-                            <col style="width: 16%;"> <!-- ราคาต่อหน่วย -->
-                            <col style="width: 16%;"> <!-- จำนวนเงิน -->
-                        </colgroup>
-                        <tbody>
-                            <!-- Row 1: Notes (rowspan=2) | รวมเงิน | Subtotal -->
-                            <tr class="sum-row-1">
-                                <td rowspan="2" class="align-top" style="padding: 6px 8px;">
-                                    <div class="flex items-start gap-2.5 h-full">
-                                        <span class="font-semibold whitespace-nowrap text-[#111111]"
-                                              style="font-size: 11.5px; padding-top: 2px;">
-                                            หมายเหตุ
-                                        </span>
-                                        <div class="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
-                                            <input type="text" id="noteLine1"
-                                                class="doc-input font-bold"
-                                                style="color: #E84E1B; font-size: 11.5px; line-height: 1.45;"
-                                                value="* มัดจำ 50 % ในวันตกลงสั่งทำ"
-                                                oninput="saveCompanySettings()">
-                                            <input type="text" id="noteLine2"
-                                                class="doc-input font-medium"
-                                                style="color: #111111; font-size: 11.5px; line-height: 1.45;"
-                                                value="* ธ.กรุงศรี 6111111453 นายณรงค์ สุวรรณรัตน์"
-                                                oninput="saveCompanySettings()">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-center font-bold text-[#111111] whitespace-nowrap" style="font-size: 12px;">
-                                    รวมเงิน
-                                </td>
-                                <td id="subtotalCell" class="text-right font-semibold text-[#111111] tabular-nums whitespace-nowrap" style="font-size: 12.5px;">
-                                </td>
-                            </tr>
-
-                            <!-- Row 2: Vat 7% | VAT Amount -->
-                            <tr class="sum-row-2">
-                                <td class="text-center font-bold text-[#111111] whitespace-nowrap" style="font-size: 12px;">
-                                    Vat 7%
-                                </td>
-                                <td id="vatCell" class="text-right font-semibold text-[#111111] tabular-nums whitespace-nowrap" style="font-size: 12.5px;">
-                                </td>
-                            </tr>
-
-                            <!-- Row 3: Thai Baht Text | รวมราคาทั้งสิ้น | Grand Total -->
-                            <tr class="sum-row-3">
-                                <td style="padding: 0 8px;">
-                                    <input type="text" id="bahtTextInput"
-                                        class="doc-input text-center font-bold text-[#111111]"
-                                        style="font-size: 11.5px; line-height: 1.45;"
-                                        placeholder=""
-                                        oninput="bahtTextManuallyEdited = true">
-                                </td>
-                                <td class="text-center font-bold text-[#111111] whitespace-nowrap" style="font-size: 12px;">
-                                    รวมราคาทั้งสิ้น
-                                </td>
-                                <td id="grandTotalCell" class="text-right font-bold text-[#111111] tabular-nums whitespace-nowrap" style="font-size: 13px;">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- 5. BOTTOM SIGNATURE SECTION (2 Separate Boxes Side-by-Side) -->
-                <div class="signature-row">
-                    <!-- Left Box: ผู้อนุมัติ -->
-                    <div class="signature-box">
-                        <div class="sig-line"></div>
-                        <div style="height: 18px;"></div>
-                        <div class="font-bold text-[#111111]" style="font-size: 12px; line-height: 1.45;">
-                            ผู้อนุมัติ
-                        </div>
-                        <div class="date-dots-wrap">
-                            <span>วันที่</span>
-                            <span class="date-dots-input-wrap">
-                                <span class="date-dots-bg">..............................................</span>
-                                <input type="text" id="approverDate" class="date-overlay-input" aria-label="วันที่ผู้อนุมัติ">
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Right Box: ผู้เสนอราคา -->
-                    <div class="signature-box">
-                        <div class="sig-line"></div>
-                        <div class="w-full flex justify-center">
-                            <input type="text" id="proposerName"
-                                class="doc-input text-center font-bold text-[#111111] !w-[85%]"
-                                style="font-size: 12px; line-height: 1.45;"
-                                value="นางสาวปรียานุช เชษฐพันธ์"
-                                oninput="saveCompanySettings()">
-                        </div>
-                        <div class="font-bold text-[#111111]" style="font-size: 12px; line-height: 1.45;">
-                            ผู้เสนอราคา
-                        </div>
-                        <div class="date-dots-wrap">
-                            <span>วันที่</span>
-                            <span class="date-dots-input-wrap">
-                                <span class="date-dots-bg">..............................................</span>
-                                <input type="text" id="proposerDate" class="date-overlay-input" aria-label="วันที่ผู้เสนอราคา">
-                            </span>
+                        <div class="summary-row summary-row-3">
+                            <div class="summary-label">รวมราคาทั้งสิ้น</div>
+                            <div id="grand-total-display" class="summary-value font-bold" style="font-size: 13px;"></div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-            </article>
-        </div>
+            <!-- ==================== 5. BOTTOM SIGNATURE SECTION (height: 132px) ==================== -->
+            <div class="signature-section">
+                <!-- Left Box: ผู้อนุมัติ -->
+                <div class="signature-box">
+                    <div class="sig-line-left"></div>
+                    <div class="sig-text">ผู้อนุมัติ</div>
+                    <div class="sig-date-row">
+                        <span>วันที่</span>
+                        <input type="text" id="sign-date-left" class="dotted-date-input" aria-label="วันที่ผู้อนุมัติ">
+                    </div>
+                </div>
+
+                <!-- Right Box: ผู้เสนอราคา -->
+                <div class="signature-box">
+                    <div class="sig-line-right"></div>
+                    <div class="sig-text">นางสาวปรียานุช เชษฐพันธ์</div>
+                    <div class="sig-text">ผู้เสนอราคา</div>
+                    <div class="sig-date-row">
+                        <span>วันที่</span>
+                        <input type="text" id="sign-date-right" class="dotted-date-input" aria-label="วันที่ผู้เสนอราคา">
+                    </div>
+                </div>
+            </div>
+
+        </article>
     </main>
 
-    <!-- ==================== LOADING OVERLAY (z-index: 99999) ==================== -->
-    <div id="pdfLoadingOverlay" class="no-print fixed inset-0 hidden items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4" style="z-index: 99999;">
+    <!-- ==================== FULL-SCREEN PDF LOADING OVERLAY (z-index: 99999) ==================== -->
+    <div id="pdf-loading-overlay" class="no-print fixed inset-0 hidden items-center justify-center bg-slate-900/75 backdrop-blur-sm p-4" style="z-index: 99999;">
         <div class="bg-white rounded-2xl px-7 py-6 shadow-2xl flex flex-col items-center gap-3 max-w-xs w-full text-center">
             <div class="w-12 h-12 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center text-[#F15A24]">
                 <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
             </div>
             <div class="font-bold text-gray-900 text-sm">กำลังสร้างไฟล์ PDF ขนาด A4...</div>
-            <div class="text-xs text-gray-500 leading-relaxed">
-                กรุณารอสักครู่ ระบบกำลังจัดหน้ากระดาษให้พอดีไม่ตัดขอบครับ
-            </div>
+            <div class="text-xs text-gray-500">กรุณารอสักครู่ ระบบกำลังจัดหน้ากระดาษให้สมบูรณ์</div>
         </div>
     </div>
 
-    <!-- ==================== CUSTOM CONFIRMATION MODAL (ไม่ใช้ alert/confirm) ==================== -->
-    <div id="clearModal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-[2px] p-4">
+    <!-- ==================== CUSTOM RESET CONFIRMATION MODAL (No confirm()) ==================== -->
+    <div id="reset-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-[2px] p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-gray-200">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
@@ -919,18 +943,18 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-gray-900 text-base">ล้างข้อมูลลูกค้าและรายการ?</h3>
-                    <p class="text-xs text-gray-500">เพื่อเริ่มต้นออกใบเสนอราคาใบใหม่</p>
+                    <p class="text-xs text-gray-500">เพื่อเริ่มต้นกรอกใบเสนอราคาใบใหม่</p>
                 </div>
             </div>
             <p class="text-xs sm:text-sm text-gray-600 mb-5 leading-relaxed">
-                ข้อมูลร้านค้า, เลขประจำตัวผู้เสียภาษี, เงื่อนไขการชำระเงิน, หมายเหตุ และชื่อผู้เสนอราคาจะยังคงอยู่เหมือนเดิมครับ
+                ข้อมูลร้านค้า เงื่อนไขการชำระเงิน กำหนดส่งมอบ และหมายเหตุบัญชีธนาคารจะยังคงอยู่เหมือนเดิมครับ
             </p>
             <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeClearModal()"
+                <button type="button" onclick="closeResetModal()"
                     class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs sm:text-sm font-semibold transition">
                     ยกเลิก
                 </button>
-                <button type="button" onclick="confirmClearQuote()"
+                <button type="button" onclick="confirmReset()"
                     class="px-4 py-2 rounded-lg bg-[#F15A24] hover:bg-[#d94d1b] text-white text-xs sm:text-sm font-semibold transition shadow-sm">
                     ยืนยันล้างข้อมูล
                 </button>
@@ -940,477 +964,382 @@
 
     <!-- ==================== TOAST NOTIFICATION ==================== -->
     <div id="toast" class="no-print fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-xl bg-gray-900 text-white text-xs sm:text-sm font-medium shadow-xl items-center gap-2 whitespace-nowrap">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-[#F15A24]"></i>
-        <span id="toastText">ดำเนินการเรียบร้อย</span>
+        <i id="toast-icon" class="fa-solid fa-circle-check text-[#F15A24]"></i>
+        <span id="toast-msg">เรียบร้อยแล้ว</span>
     </div>
 
-    <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
     <script>
         /* =====================================================================
          * 1. PERSISTENT COMPANY SETTINGS (localStorage)
          * ===================================================================== */
-        const STORAGE_KEY = 'dsignage_quote_settings_v3';
+        const SETTINGS_KEY = 'dsignage_a4_settings_v4';
 
         const DEFAULT_SETTINGS = {
-            compName: 'หจก.ดี-ไซน์เนจ 59',
-            compBranch: '(สำนักงานใหญ่)',
-            compAddress: '59/25 หมู่ที่ 5 ถ.เทพกระษัตรี ต.ศรีสุนทร อ.ถลาง จ.ภูเก็ต 83110',
-            compPhone: '076-510477, 081-3671816',
-            compTaxId: '083355900224',
-            paymentTermsLine1: 'มัดจำ 50% วันที่ตกลงสั่งทำ',
-            paymentTermsLine2: 'ส่วนที่เหลือเมื่องานเสร็จ',
+            taxId: '083355900224',
+            paymentTerms: 'มัดจำ 50% วันที่ตกลงสั่งทำ\nส่วนที่เหลือเมื่องานเสร็จ',
             deliveryTerms: 'ไม่เกิน 15 วัน',
             noteLine1: '* มัดจำ 50 % ในวันตกลงสั่งทำ',
-            noteLine2: '* ธ.กรุงศรี 6111111453 นายณรงค์ สุวรรณรัตน์',
-            proposerName: 'นางสาวปรียานุช เชษฐพันธ์'
+            noteLine2: '* ธ.กรุงศรี 6111111453 นายณรงค์ สุวรรณรัตน์'
         };
 
-        let bahtTextManuallyEdited = false;
-
-        /* =====================================================================
-         * 2. INITIALIZATION
-         * ===================================================================== */
         window.addEventListener('DOMContentLoaded', () => {
-            loadCompanySettings();
-            initRows();
+            loadPersistentSettings();
+            initItemRows();
             toggleWatermark();
             recalculateTotals();
-            updatePaperScale();
-            window.addEventListener('resize', updatePaperScale);
         });
 
-        function loadCompanySettings() {
-            let data = { ...DEFAULT_SETTINGS };
+        function loadPersistentSettings() {
+            let saved = { ...DEFAULT_SETTINGS };
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) {
-                    data = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
-                }
+                const raw = localStorage.getItem(SETTINGS_KEY);
+                if (raw) saved = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
             } catch (e) {
-                data = { ...DEFAULT_SETTINGS };
+                saved = { ...DEFAULT_SETTINGS };
             }
 
-            document.getElementById('compName').value = data.compName;
-            document.getElementById('compBranch').value = data.compBranch;
-            document.getElementById('compAddress').value = data.compAddress;
-            document.getElementById('compPhone').value = data.compPhone;
-            document.getElementById('compTaxId').value = data.compTaxId;
-            document.getElementById('paymentTermsLine1').value = data.paymentTermsLine1;
-            document.getElementById('paymentTermsLine2').value = data.paymentTermsLine2;
-            document.getElementById('deliveryTerms').value = data.deliveryTerms;
-            document.getElementById('noteLine1').value = data.noteLine1;
-            document.getElementById('noteLine2').value = data.noteLine2;
-            document.getElementById('proposerName').value = data.proposerName;
-
-            autoWidthInput(document.getElementById('compName'));
-            autoWidthInput(document.getElementById('compBranch'));
+            document.getElementById('company-tax-id').value = saved.taxId;
+            document.getElementById('payment-terms').value = saved.paymentTerms;
+            document.getElementById('delivery-terms').value = saved.deliveryTerms;
+            document.getElementById('note-line-1').value = saved.noteLine1;
+            document.getElementById('note-line-2').value = saved.noteLine2;
         }
 
-        function saveCompanySettings() {
+        function savePersistentSettings() {
             const payload = {
-                compName: document.getElementById('compName').value,
-                compBranch: document.getElementById('compBranch').value,
-                compAddress: document.getElementById('compAddress').value,
-                compPhone: document.getElementById('compPhone').value,
-                compTaxId: document.getElementById('compTaxId').value,
-                paymentTermsLine1: document.getElementById('paymentTermsLine1').value,
-                paymentTermsLine2: document.getElementById('paymentTermsLine2').value,
-                deliveryTerms: document.getElementById('deliveryTerms').value,
-                noteLine1: document.getElementById('noteLine1').value,
-                noteLine2: document.getElementById('noteLine2').value,
-                proposerName: document.getElementById('proposerName').value
+                taxId: document.getElementById('company-tax-id').value,
+                paymentTerms: document.getElementById('payment-terms').value,
+                deliveryTerms: document.getElementById('delivery-terms').value,
+                noteLine1: document.getElementById('note-line-1').value,
+                noteLine2: document.getElementById('note-line-2').value
             };
             try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
             } catch (e) {
-                // Ignore storage quota errors
+                // Ignore localStorage quota errors
             }
         }
 
         /* =====================================================================
-         * 3. WATERMARK & DATE HELPERS
+         * 2. ITEM ROWS MANAGEMENT (7% / 51% / 10% / 16% / 16%)
          * ===================================================================== */
-        function toggleWatermark() {
-            const show = document.getElementById('watermarkToggle').checked;
-            const layer = document.getElementById('watermarkLayer');
-            if (show) {
-                layer.classList.remove('watermark-hidden');
-            } else {
-                layer.classList.add('watermark-hidden');
-            }
-        }
-
-        function fillTodayThaiDate() {
-            const now = new Date();
-            const d = String(now.getDate()).padStart(2, '0');
-            const m = String(now.getMonth() + 1).padStart(2, '0');
-            const y = now.getFullYear() + 543;
-            const formatted = `${d}/${m}/${y}`;
-
-            const labelEl = document.getElementById('topRightLabel');
-            const valEl = document.getElementById('topRightValue');
-            if (labelEl.value.trim() === '') {
-                labelEl.value = 'วันที่';
-            }
-            valEl.value = formatted;
-
-            const proposerDateEl = document.getElementById('proposerDate');
-            if (proposerDateEl.value.trim() === '') {
-                proposerDateEl.value = formatted;
-            }
-
-            showToast(`เติมวันที่ ${formatted} เรียบร้อยแล้ว`);
-        }
-
-        /* =====================================================================
-         * 4. DYNAMIC ITEM ROWS (ADD / DELETE / AUTO-CALC)
-         * ===================================================================== */
-        function initRows() {
-            const container = document.getElementById('itemsContainer');
+        function initItemRows() {
+            const container = document.getElementById('items-rows-container');
             container.innerHTML = '';
-            addRow(false);
+            addItemRow(false);
         }
 
-        function addRow(focusDesc = false) {
-            const container = document.getElementById('itemsContainer');
+        function addItemRow(shouldFocus = false) {
+            const container = document.getElementById('items-rows-container');
             const row = document.createElement('div');
             row.className = 'item-row';
 
             row.innerHTML = `
-                <!-- 1. ลำดับ (7%) -->
-                <div class="col-no">
-                    <input type="text"
-                        class="item-no doc-input text-center tabular-nums"
-                        data-manual="false"
+                <div class="item-cell col-1">
+                    <input type="text" class="item-no sheet-input text-center" data-manual="false"
                         oninput="this.dataset.manual = this.value.trim() !== '' ? 'true' : 'false';">
                 </div>
-
-                <!-- 2. รายการ (51%) -->
-                <div class="col-desc">
-                    <textarea rows="1"
-                        class="item-desc doc-textarea"
+                <div class="item-cell col-2">
+                    <textarea rows="1" class="item-desc sheet-textarea"
                         placeholder="พิมพ์รายละเอียดสินค้า / งานป้าย..."
-                        oninput="autoResizeTextarea(this); onRowInput();"></textarea>
+                        oninput="autoGrowTextarea(this); updateRowNumbers();"></textarea>
                 </div>
-
-                <!-- 3. จำนวน (10%) -->
-                <div class="col-qty">
-                    <input type="text" inputmode="decimal"
-                        class="item-qty doc-input text-center tabular-nums"
-                        placeholder=""
-                        oninput="onRowCalcInput(this)"
-                        onblur="formatQtyOnBlur(this)">
+                <div class="item-cell col-3">
+                    <input type="number" step="any" min="0" class="item-qty sheet-input text-center"
+                        oninput="onItemValueChange()">
                 </div>
-
-                <!-- 4. ราคาต่อหน่วย (16%) -->
-                <div class="col-unit">
-                    <input type="text" inputmode="decimal"
-                        class="item-price doc-input text-right tabular-nums"
-                        placeholder=""
-                        oninput="onRowCalcInput(this)"
-                        onfocus="unformatMoneyOnFocus(this)"
-                        onblur="formatMoneyOnBlur(this)">
+                <div class="item-cell col-4">
+                    <input type="number" step="any" min="0" class="item-price sheet-input text-right"
+                        oninput="onItemValueChange()">
                 </div>
-
-                <!-- 5. จำนวนเงิน (16%) -->
-                <div class="col-total">
-                    <input type="text" inputmode="decimal"
-                        class="item-total doc-input text-right tabular-nums font-medium"
-                        data-manual="false"
-                        placeholder=""
-                        oninput="onManualTotalInput(this)"
-                        onfocus="unformatMoneyOnFocus(this)"
-                        onblur="formatManualTotalOnBlur(this)">
+                <div class="item-cell col-5">
+                    <div class="item-total text-right font-medium tabular-nums" style="padding: 1px 3px;"></div>
                 </div>
-
-                <!-- Delete Row Button (.no-print) -->
-                <button type="button" class="row-delete-btn no-print" onclick="deleteRow(this)" title="ลบแถวนี้">
+                <button type="button" class="row-delete-btn no-pdf" onclick="removeItemRow(this)" title="ลบรายการนี้">
                     &times;
                 </button>
             `;
 
             container.appendChild(row);
-            updateAutoRowNumbers();
+            updateRowNumbers();
 
-            if (focusDesc) {
-                const descEl = row.querySelector('.item-desc');
-                if (descEl) descEl.focus();
+            if (shouldFocus) {
+                const desc = row.querySelector('.item-desc');
+                if (desc) desc.focus();
             }
         }
 
-        function deleteRow(btn) {
-            const container = document.getElementById('itemsContainer');
+        function removeItemRow(btn) {
+            const container = document.getElementById('items-rows-container');
             const row = btn.closest('.item-row');
+
             if (container.children.length <= 1) {
-                row.querySelector('.item-no').value = '';
-                row.querySelector('.item-no').dataset.manual = 'false';
-                const desc = row.querySelector('.item-desc');
-                desc.value = '';
-                autoResizeTextarea(desc);
+                const noEl = row.querySelector('.item-no');
+                noEl.value = '';
+                noEl.dataset.manual = 'false';
+                const descEl = row.querySelector('.item-desc');
+                descEl.value = '';
+                autoGrowTextarea(descEl);
                 row.querySelector('.item-qty').value = '';
                 row.querySelector('.item-price').value = '';
-                const total = row.querySelector('.item-total');
-                total.value = '';
-                total.dataset.manual = 'false';
+                row.querySelector('.item-total').textContent = '';
             } else {
                 row.remove();
             }
-            bahtTextManuallyEdited = false;
-            updateAutoRowNumbers();
+
+            updateRowNumbers();
             recalculateTotals();
         }
 
-        function onRowInput() {
-            updateAutoRowNumbers();
+        function autoGrowTextarea(el) {
+            if (!el) return;
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
         }
 
-        function onRowCalcInput(el) {
-            const row = el.closest('.item-row');
-            const totalInput = row.querySelector('.item-total');
-            totalInput.dataset.manual = 'false';
-            bahtTextManuallyEdited = false;
-            updateAutoRowNumbers();
+        function onItemValueChange() {
+            updateRowNumbers();
             recalculateTotals();
         }
 
-        function onManualTotalInput(el) {
-            el.dataset.manual = el.value.trim() !== '' ? 'true' : 'false';
-            bahtTextManuallyEdited = false;
-            updateAutoRowNumbers();
-            recalculateTotals();
-        }
-
-        function updateAutoRowNumbers() {
-            const rows = document.querySelectorAll('#itemsContainer .item-row');
-            let counter = 1;
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#items-rows-container .item-row');
+            let autoIndex = 1;
             rows.forEach((row) => {
-                const noInput = row.querySelector('.item-no');
+                const noEl = row.querySelector('.item-no');
                 const desc = row.querySelector('.item-desc').value.trim();
                 const qty = row.querySelector('.item-qty').value.trim();
                 const price = row.querySelector('.item-price').value.trim();
-                const total = row.querySelector('.item-total').value.trim();
-                const hasContent = desc !== '' || qty !== '' || price !== '' || total !== '';
+                const hasData = desc !== '' || qty !== '' || price !== '';
 
-                if (noInput.dataset.manual !== 'true') {
-                    noInput.value = hasContent ? String(counter++) : '';
+                if (noEl.dataset.manual !== 'true') {
+                    noEl.value = hasData ? String(autoIndex++) : '';
                 } else {
-                    counter++;
+                    autoIndex++;
                 }
             });
         }
 
         /* =====================================================================
-         * 5. NUMBER PARSING, FORMATTING & TOTALS CALCULATION
+         * 3. CALCULATIONS & FORMATTING
          * ===================================================================== */
-        function parseNumeric(val) {
-            if (val === null || val === undefined) return NaN;
-            const cleaned = String(val).replace(/,/g, '').trim();
-            if (cleaned === '') return NaN;
-            const num = parseFloat(cleaned);
-            return isNaN(num) ? NaN : num;
-        }
-
-        function formatMoney(num) {
-            return (Number(num) || 0).toLocaleString('th-TH', {
+        function formatCurrency(num) {
+            return Number(num).toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
         }
 
-        function unformatMoneyOnFocus(input) {
-            const num = parseNumeric(input.value);
-            if (!isNaN(num)) {
-                input.value = num;
-            }
-        }
-
-        function formatMoneyOnBlur(input) {
-            const num = parseNumeric(input.value);
-            if (!isNaN(num)) {
-                input.value = formatMoney(num);
-            } else {
-                input.value = '';
-            }
-            recalculateTotals();
-        }
-
-        function formatManualTotalOnBlur(input) {
-            const num = parseNumeric(input.value);
-            if (!isNaN(num)) {
-                input.value = formatMoney(num);
-            } else {
-                input.value = '';
-                input.dataset.manual = 'false';
-            }
-            recalculateTotals();
-        }
-
-        function formatQtyOnBlur(input) {
-            const num = parseNumeric(input.value);
-            if (!isNaN(num)) {
-                input.value = Number.isInteger(num)
-                    ? num.toLocaleString('th-TH')
-                    : num.toLocaleString('th-TH', { maximumFractionDigits: 2 });
-            }
-            recalculateTotals();
-        }
-
         function recalculateTotals() {
-            const rows = document.querySelectorAll('#itemsContainer .item-row');
+            const rows = document.querySelectorAll('#items-rows-container .item-row');
             let subtotal = 0;
-            let hasAnyAmount = false;
 
             rows.forEach((row) => {
-                const qty = parseNumeric(row.querySelector('.item-qty').value);
-                const price = parseNumeric(row.querySelector('.item-price').value);
-                const totalInput = row.querySelector('.item-total');
+                const qtyVal = parseFloat(row.querySelector('.item-qty').value);
+                const priceVal = parseFloat(row.querySelector('.item-price').value);
+                const totalEl = row.querySelector('.item-total');
 
-                if (totalInput.dataset.manual === 'true') {
-                    const manualVal = parseNumeric(totalInput.value);
-                    if (!isNaN(manualVal)) {
-                        subtotal += manualVal;
-                        hasAnyAmount = true;
+                if (!isNaN(qtyVal) && !isNaN(priceVal)) {
+                    const lineTotal = qtyVal * priceVal;
+                    if (lineTotal > 0) {
+                        totalEl.textContent = formatCurrency(lineTotal);
+                        subtotal += lineTotal;
+                    } else {
+                        totalEl.textContent = '';
                     }
-                } else if (!isNaN(qty) && !isNaN(price)) {
-                    const lineTotal = qty * price;
-                    totalInput.value = formatMoney(lineTotal);
-                    subtotal += lineTotal;
-                    hasAnyAmount = true;
                 } else {
-                    totalInput.value = '';
+                    totalEl.textContent = '';
                 }
             });
 
-            const includeVat = document.getElementById('vatToggle').checked;
-            const subtotalCell = document.getElementById('subtotalCell');
-            const vatCell = document.getElementById('vatCell');
-            const grandTotalCell = document.getElementById('grandTotalCell');
-            const bahtTextInput = document.getElementById('bahtTextInput');
+            const includeVat = document.getElementById('vat-checkbox').checked;
+            const subtotalEl = document.getElementById('subtotal-display');
+            const vatEl = document.getElementById('vat-display');
+            const grandTotalEl = document.getElementById('grand-total-display');
+            const bahtTextEl = document.getElementById('baht-text-display');
 
-            if (!hasAnyAmount) {
-                subtotalCell.textContent = '';
-                vatCell.textContent = '';
-                grandTotalCell.textContent = '';
-                if (!bahtTextManuallyEdited) {
-                    bahtTextInput.value = '';
-                }
+            if (subtotal <= 0) {
+                subtotalEl.textContent = '';
+                vatEl.textContent = '';
+                grandTotalEl.textContent = '';
+                bahtTextEl.textContent = '';
                 return;
             }
 
             const vatAmount = includeVat ? subtotal * 0.07 : 0;
             const grandTotal = subtotal + vatAmount;
 
-            subtotalCell.textContent = formatMoney(subtotal);
-            vatCell.textContent = includeVat ? formatMoney(vatAmount) : '-';
-            grandTotalCell.textContent = formatMoney(grandTotal);
-
-            if (!bahtTextManuallyEdited) {
-                bahtTextInput.value = grandTotal > 0 ? `(${thaiBahtText(grandTotal)})` : '';
-            }
+            subtotalEl.textContent = formatCurrency(subtotal);
+            vatEl.textContent = includeVat ? formatCurrency(vatAmount) : '-';
+            grandTotalEl.textContent = formatCurrency(grandTotal);
+            bahtTextEl.textContent = `(${numberToThaiBahtText(grandTotal)})`;
         }
 
         /* =====================================================================
-         * 6. ACCURATE THAI BAHT TEXT CONVERTER
+         * 4. ACCURATE THAI BAHT TEXT CONVERTER (Supports Satang & ถ้วน)
          * ===================================================================== */
-        function thaiBahtText(amount) {
+        function numberToThaiBahtText(amount) {
             if (isNaN(amount) || amount === null) return '';
             const totalSatang = Math.round(Math.abs(amount) * 100);
             if (totalSatang === 0) return 'ศูนย์บาทถ้วน';
 
-            const baht = Math.floor(totalSatang / 100);
-            const satang = totalSatang % 100;
+            const bahtPart = Math.floor(totalSatang / 100);
+            const satangPart = totalSatang % 100;
 
-            const digits = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
-            const positions = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน'];
+            const thaiDigits = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+            const thaiUnits = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน'];
 
-            function readSixDigits(numStr) {
+            function readSixDigitGroup(str) {
                 let text = '';
-                const len = numStr.length;
+                const len = str.length;
                 for (let i = 0; i < len; i++) {
-                    const d = parseInt(numStr[i], 10);
-                    const pos = len - i - 1;
-                    if (d === 0) continue;
+                    const digit = parseInt(str[i], 10);
+                    const unitPos = len - i - 1;
+                    if (digit === 0) continue;
 
-                    if (pos === 0 && d === 1 && len > 1) {
-                        const hasLeadingNonZero = numStr.slice(0, len - 1).split('').some(c => c !== '0');
-                        text += hasLeadingNonZero ? 'เอ็ด' : 'หนึ่ง';
-                    } else if (pos === 1 && d === 2) {
+                    if (unitPos === 0 && digit === 1 && len > 1) {
+                        const hasPrefixDigit = str.slice(0, len - 1).split('').some(ch => ch !== '0');
+                        text += hasPrefixDigit ? 'เอ็ด' : 'หนึ่ง';
+                    } else if (unitPos === 1 && digit === 2) {
                         text += 'ยี่สิบ';
-                    } else if (pos === 1 && d === 1) {
+                    } else if (unitPos === 1 && digit === 1) {
                         text += 'สิบ';
                     } else {
-                        text += digits[d] + positions[pos];
+                        text += thaiDigits[digit] + thaiUnits[unitPos];
                     }
                 }
                 return text;
             }
 
-            function readNumber(n) {
-                if (n === 0) return '';
-                const str = String(n);
+            function readInteger(num) {
+                if (num === 0) return '';
+                const numStr = String(num);
                 const groups = [];
-                for (let i = str.length; i > 0; i -= 6) {
-                    groups.unshift(str.slice(Math.max(0, i - 6), i));
+                for (let i = numStr.length; i > 0; i -= 6) {
+                    groups.unshift(numStr.slice(Math.max(0, i - 6), i));
                 }
                 let result = '';
-                groups.forEach((grp, idx) => {
-                    const txt = readSixDigits(grp);
-                    const isLast = idx === groups.length - 1;
-                    if (txt) {
-                        result += txt + (isLast ? '' : 'ล้าน');
-                    } else if (!isLast && result !== '') {
+                groups.forEach((group, idx) => {
+                    const groupText = readSixDigitGroup(group);
+                    const isLastGroup = idx === groups.length - 1;
+                    if (groupText) {
+                        result += groupText + (isLastGroup ? '' : 'ล้าน');
+                    } else if (!isLastGroup && result !== '') {
                         result += 'ล้าน';
                     }
                 });
                 return result;
             }
 
-            let out = amount < 0 ? 'ลบ' : '';
-            if (baht > 0) out += readNumber(baht) + 'บาท';
-            if (satang > 0) {
-                out += readNumber(satang) + 'สตางค์';
-            } else {
-                out += 'ถ้วน';
+            let output = amount < 0 ? 'ลบ' : '';
+            if (bahtPart > 0) {
+                output += readInteger(bahtPart) + 'บาท';
             }
-            return out;
+            if (satangPart > 0) {
+                output += readInteger(satangPart) + 'สตางค์';
+            } else {
+                output += 'ถ้วน';
+            }
+            return output;
         }
 
         /* =====================================================================
-         * 7. ZERO-CROP CLIENT-SIDE A4 PDF EXPORT (PC / iPhone / iPad)
+         * 5. TOOLBAR ACTIONS (DATE, WATERMARK, RESET, PRINT)
          * ===================================================================== */
-        async function downloadPDF() {
-            const btn = document.getElementById('btnDownloadPdf');
-            const overlay = document.getElementById('pdfLoadingOverlay');
+        function fillTodayThaiDate() {
+            const now = new Date();
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const thaiYear = now.getFullYear() + 543;
+            const dateStr = `${dd}/${mm}/${thaiYear}`;
+
+            const labelEl = document.getElementById('doc-label');
+            if (labelEl.value.trim() === '') {
+                labelEl.value = 'วันที่';
+            }
+            document.getElementById('doc-date').value = dateStr;
+            document.getElementById('sign-date-right').value = dateStr;
+
+            showToast(`เติมวันที่ ${dateStr} เรียบร้อยแล้ว`);
+        }
+
+        function toggleWatermark() {
+            const checked = document.getElementById('watermark-checkbox').checked;
+            const wm = document.getElementById('watermark-container');
+            if (checked) {
+                wm.classList.remove('watermark-hidden');
+            } else {
+                wm.classList.add('watermark-hidden');
+            }
+        }
+
+        function openResetModal() {
+            const modal = document.getElementById('reset-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeResetModal() {
+            const modal = document.getElementById('reset-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmReset() {
+            document.getElementById('customer-info').value = '';
+            document.getElementById('doc-label').value = '';
+            document.getElementById('doc-date').value = '';
+            document.getElementById('sign-date-left').value = '';
+            document.getElementById('sign-date-right').value = '';
+            initItemRows();
+            recalculateTotals();
+            closeResetModal();
+            showToast('ล้างข้อมูลลูกค้าและรายการสินค้าเรียบร้อยแล้ว');
+        }
+
+        function printSheet() {
+            const prevTitle = document.title;
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            document.title = `ใบเสนอราคา_D-SIGNAGE_${yyyy}-${mm}-${dd}`;
+            window.print();
+            setTimeout(() => {
+                document.title = prevTitle;
+            }, 800);
+        }
+
+        /* =====================================================================
+         * 6. BULLETPROOF CLIENT-SIDE PDF EXPORT (html2canvas + jsPDF)
+         * ===================================================================== */
+        async function exportPDF() {
+            const exportBtn = document.getElementById('btn-export-pdf');
+            const overlay = document.getElementById('pdf-loading-overlay');
 
             if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
-                showToast('กำลังโหลดระบบสร้าง PDF กรุณาลองกดใหม่อีกครั้ง', true);
+                showToast('กำลังโหลดไลบรารีสร้าง PDF กรุณาลองใหม่อีกครั้ง', true);
                 return;
             }
 
-            // ปิดโฟกัสช่องกรอกเพื่อให้จัดรูปแบบตัวเลขเสร็จสมบูรณ์ก่อนจับภาพ
             if (document.activeElement && typeof document.activeElement.blur === 'function') {
                 document.activeElement.blur();
             }
 
-            // 1. แสดงหน้าจอ Loading Overlay (z-index: 99999)
-            btn.disabled = true;
+            exportBtn.disabled = true;
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
-
-            // 2. บันทึกค่า scrollX / scrollY เดิม แล้วสั่ง window.scrollTo(0, 0)
-            const savedScrollX = window.scrollX || window.pageXOffset || 0;
-            const savedScrollY = window.scrollY || window.pageYOffset || 0;
-            window.scrollTo(0, 0);
 
             let sandbox = null;
 
             try {
-                const sourcePaper = document.getElementById('quotation-paper');
+                const sourceSheet = document.getElementById('a4-sheet');
 
-                // 3. สร้าง Sandbox ชั่วคราวที่ตำแหน่ง top: 0, left: 0 (แก้ปัญหาตัดขอบบน iOS/Desktop 100%)
+                // Create fixed-position sandbox at (0, 0) behind loading overlay
                 sandbox = document.createElement('div');
-                sandbox.id = 'pdf-render-sandbox';
-                sandbox.style.position = 'absolute';
+                sandbox.id = 'pdf-sandbox';
+                sandbox.style.position = 'fixed';
                 sandbox.style.top = '0';
                 sandbox.style.left = '0';
                 sandbox.style.width = '794px';
@@ -1419,95 +1348,75 @@
                 sandbox.style.padding = '0';
                 sandbox.style.background = '#ffffff';
                 sandbox.style.zIndex = '99990';
-                sandbox.style.transform = 'none';
                 sandbox.style.overflow = 'hidden';
+                sandbox.style.transform = 'none';
 
-                // 4. Clone #quotation-paper ใส่ใน sandbox และบังคับขนาด 794x1123px แบบไม่ย่อสเกล
-                const clonedPaper = sourcePaper.cloneNode(true);
-                clonedPaper.id = 'quotation-paper-clone';
-                clonedPaper.style.width = '794px';
-                clonedPaper.style.height = '1123px';
-                clonedPaper.style.minWidth = '794px';
-                clonedPaper.style.minHeight = '1123px';
-                clonedPaper.style.maxWidth = '794px';
-                clonedPaper.style.maxHeight = '1123px';
-                clonedPaper.style.margin = '0';
-                clonedPaper.style.boxShadow = 'none';
-                clonedPaper.style.transform = 'none';
+                // Clone #a4-sheet and strip transform / shadow
+                const clonedSheet = sourceSheet.cloneNode(true);
+                clonedSheet.id = 'a4-sheet-clone';
+                clonedSheet.style.transform = 'none';
+                clonedSheet.style.boxShadow = 'none';
+                clonedSheet.style.margin = '0';
 
-                // ลบปุ่มหรือองค์ประกอบ .no-print ทั้งหมดออกจากตัว clone
-                clonedPaper.querySelectorAll('.no-print').forEach(el => el.remove());
+                // Remove all .no-pdf elements (e.g., row delete buttons)
+                clonedSheet.querySelectorAll('.no-pdf').forEach(el => el.remove());
 
-                // เก็บรายการ input/textarea จากหน้าจริงก่อนแทนที่
-                const liveFields = sourcePaper.querySelectorAll('input, textarea');
-                const cloneFields = clonedPaper.querySelectorAll('input, textarea');
+                // Pair live fields with cloned fields before replacing so live textarea values are preserved
+                const liveFields = sourceSheet.querySelectorAll('input, textarea');
+                const clonedFields = clonedSheet.querySelectorAll('input, textarea');
 
-                // แนบ sandbox เข้า document.body เพื่อให้ computed styles คำนวณได้ตรงจริง
-                sandbox.appendChild(clonedPaper);
+                // Mount sandbox in DOM so getComputedStyle returns exact layout metrics
+                sandbox.appendChild(clonedSheet);
                 document.body.appendChild(sandbox);
 
-                // 5. แปลงทุก <input> และ <textarea> ในตัว clone เป็น <div> ตามค่า .value จริง
-                cloneFields.forEach((clonedField, idx) => {
-                    const liveField = liveFields[idx];
-                    const rawVal = liveField ? liveField.value : clonedField.value;
+                // Replace every <input> and <textarea> with a plain <div> (no placeholders in PDF)
+                clonedFields.forEach((clonedField, index) => {
+                    const liveField = liveFields[index];
+                    const rawValue = liveField ? liveField.value : clonedField.value;
                     const cs = window.getComputedStyle(clonedField);
-                    const isTextarea = clonedField.tagName.toLowerCase() === 'textarea';
-                    const isDateOverlay = clonedField.classList.contains('date-overlay-input');
-                    const isInlineAuto = clonedField.classList.contains('inline-block');
+                    const isDottedDate = clonedField.classList.contains('dotted-date-input');
+                    const isTaxId = clonedField.classList.contains('tax-id-input');
 
-                    const divEl = document.createElement('div');
-                    divEl.style.fontFamily = cs.fontFamily;
-                    divEl.style.fontSize = cs.fontSize;
-                    divEl.style.fontWeight = cs.fontWeight;
-                    divEl.style.color = cs.color;
-                    divEl.style.textAlign = cs.textAlign;
-                    divEl.style.lineHeight = cs.lineHeight;
-                    divEl.style.letterSpacing = cs.letterSpacing;
-                    divEl.style.padding = cs.padding;
-                    divEl.style.margin = cs.margin;
-                    divEl.style.boxSizing = 'border-box';
-                    divEl.style.background = 'transparent';
-                    divEl.style.border = '1px solid transparent';
-                    divEl.style.overflow = 'visible';
+                    const replacement = document.createElement('div');
+                    replacement.style.fontFamily = cs.fontFamily;
+                    replacement.style.fontSize = cs.fontSize;
+                    replacement.style.fontWeight = cs.fontWeight;
+                    replacement.style.color = cs.color;
+                    replacement.style.textAlign = cs.textAlign;
+                    replacement.style.lineHeight = cs.lineHeight;
+                    replacement.style.padding = cs.padding;
+                    replacement.style.margin = cs.margin;
+                    replacement.style.boxSizing = 'border-box';
+                    replacement.style.whiteSpace = 'pre-wrap';
+                    replacement.style.wordBreak = 'break-word';
+                    replacement.style.overflow = 'visible';
+                    replacement.style.background = 'transparent';
 
-                    if (isDateOverlay) {
-                        divEl.style.position = 'absolute';
-                        divEl.style.left = '0';
-                        divEl.style.right = '0';
-                        divEl.style.bottom = '2px';
-                        divEl.style.width = '100%';
-                        divEl.style.whiteSpace = 'pre-wrap';
-                        divEl.textContent = rawVal.trim() !== '' ? rawVal : '';
-                    } else if (isTextarea) {
-                        divEl.style.display = 'block';
-                        divEl.style.width = '100%';
-                        divEl.style.minHeight = cs.height;
-                        divEl.style.whiteSpace = 'pre-wrap';
-                        divEl.style.wordBreak = 'break-word';
-                        divEl.textContent = rawVal.trim() !== '' ? rawVal : '';
+                    if (isDottedDate) {
+                        replacement.style.width = cs.width;
+                        replacement.style.minHeight = '18px';
+                        replacement.style.borderBottom = cs.borderBottom;
+                        replacement.textContent = rawValue.trim() !== '' ? rawValue : '\u00A0';
+                    } else if (isTaxId) {
+                        replacement.style.display = 'inline-block';
+                        replacement.style.width = 'auto';
+                        replacement.textContent = rawValue.trim() !== '' ? rawValue : '';
                     } else {
-                        divEl.style.display = isInlineAuto ? 'inline-block' : 'block';
-                        divEl.style.width = isInlineAuto ? 'auto' : '100%';
-                        divEl.style.whiteSpace = cs.whiteSpace === 'nowrap' ? 'nowrap' : 'pre-wrap';
-                        if (rawVal.trim() !== '') {
-                            divEl.textContent = rawVal;
-                        } else {
-                            divEl.textContent = '\u00A0';
-                            divEl.style.color = 'transparent';
-                        }
+                        replacement.style.width = '100%';
+                        replacement.textContent = rawValue.trim() !== '' ? rawValue : '';
                     }
 
-                    clonedField.parentNode.replaceChild(divEl, clonedField);
+                    clonedField.parentNode.replaceChild(replacement, clonedField);
                 });
 
-                // 6. รอ document.fonts.ready และ requestAnimationFrame 2 รอบ
+                // Wait for webfonts and layout paint stabilization
                 if (document.fonts && document.fonts.ready) {
                     await document.fonts.ready;
                 }
-                await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                await new Promise(resolve => setTimeout(resolve, 150));
 
-                // 7. จับภาพความละเอียดสูงจากตัว clone ด้วยพิกัด x:0, y:0 คงที่
-                const canvas = await html2canvas(clonedPaper, {
+                // Capture exact 794x1123 A4 canvas at 2x resolution
+                const canvas = await html2canvas(clonedSheet, {
                     scale: 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
@@ -1521,124 +1430,52 @@
                     scrollY: 0
                 });
 
-                // 8. ใส่ภาพลงในเอกสาร A4 (210mm x 297mm) และบันทึกไฟล์ PDF
                 const imgData = canvas.toDataURL('image/jpeg', 0.96);
                 const pdf = new window.jspdf.jsPDF({
                     orientation: 'portrait',
                     unit: 'mm',
                     format: 'a4'
                 });
-                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
 
                 const now = new Date();
                 const yyyy = now.getFullYear();
                 const mm = String(now.getMonth() + 1).padStart(2, '0');
                 const dd = String(now.getDate()).padStart(2, '0');
-                const filename = `ใบเสนอราคา_D-SIGNAGE_${yyyy}-${mm}-${dd}.pdf`;
+                const fileName = `ใบเสนอราคา_D-SIGNAGE_${yyyy}-${mm}-${dd}.pdf`;
 
-                pdf.save(filename);
-                showToast(`ดาวน์โหลด ${filename} เรียบร้อยแล้ว`);
+                pdf.save(fileName);
+                showToast(`ดาวน์โหลด ${fileName} เรียบร้อยแล้ว`);
             } catch (err) {
-                console.error('PDF Export Error:', err);
+                console.error('PDF export error:', err);
                 showToast('เกิดข้อผิดพลาดในการสร้าง PDF กรุณาลองใหม่อีกครั้ง', true);
             } finally {
-                // 9. ลบ sandbox ทิ้ง คืนค่า scroll เดิม และปิด Loading Overlay
                 if (sandbox && sandbox.parentNode) {
                     sandbox.parentNode.removeChild(sandbox);
                 }
-                window.scrollTo(savedScrollX, savedScrollY);
                 overlay.classList.add('hidden');
                 overlay.classList.remove('flex');
-                btn.disabled = false;
+                exportBtn.disabled = false;
             }
         }
 
         /* =====================================================================
-         * 8. UI HELPERS, RESPONSIVE SCALING, CLEAR MODAL & PRINT
+         * 7. TOAST HELPER
          * ===================================================================== */
-        function autoResizeTextarea(el) {
-            if (!el) return;
-            el.style.height = 'auto';
-            el.style.height = el.scrollHeight + 'px';
-        }
-
-        function autoWidthInput(el) {
-            if (!el) return;
-            const style = window.getComputedStyle(el);
-            const canvas = autoWidthInput._canvas || (autoWidthInput._canvas = document.createElement('canvas'));
-            const ctx = canvas.getContext('2d');
-            ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-            const width = Math.ceil(ctx.measureText(el.value || ' ').width) + 14;
-            el.style.width = `${Math.max(40, width)}px`;
-        }
-
-        function updatePaperScale() {
-            const viewport = document.getElementById('paperViewport');
-            const wrapper = document.getElementById('paperScaleWrapper');
-            if (!viewport || !wrapper) return;
-
-            const availableW = viewport.clientWidth - 20;
-            const paperW = 794;
-            const paperH = 1123;
-
-            const scale = Math.min(1, availableW / paperW);
-            wrapper.style.transform = `scale(${scale})`;
-            wrapper.style.height = `${Math.ceil(paperH * scale)}px`;
-        }
-
-        function openClearModal() {
-            const modal = document.getElementById('clearModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeClearModal() {
-            const modal = document.getElementById('clearModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function confirmClearQuote() {
-            document.getElementById('customerInfo').value = '';
-            document.getElementById('topRightLabel').value = '';
-            document.getElementById('topRightValue').value = '';
-            document.getElementById('approverDate').value = '';
-            document.getElementById('proposerDate').value = '';
-            bahtTextManuallyEdited = false;
-            document.getElementById('bahtTextInput').value = '';
-            initRows();
-            recalculateTotals();
-            closeClearModal();
-            showToast('ล้างข้อมูลลูกค้าและรายการเรียบร้อยแล้ว');
-        }
-
-        function printQuotation() {
-            const originalTitle = document.title;
-            const now = new Date();
-            const yyyy = now.getFullYear();
-            const mm = String(now.getMonth() + 1).padStart(2, '0');
-            const dd = String(now.getDate()).padStart(2, '0');
-            document.title = `ใบเสนอราคา_D-SIGNAGE_${yyyy}-${mm}-${dd}`;
-            window.print();
-            setTimeout(() => {
-                document.title = originalTitle;
-            }, 800);
-        }
-
         let toastTimer = null;
-        function showToast(msg, isError = false) {
+        function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
-            const icon = document.getElementById('toastIcon');
-            document.getElementById('toastText').textContent = msg;
+            const icon = document.getElementById('toast-icon');
+            document.getElementById('toast-msg').textContent = message;
             icon.className = isError
                 ? 'fa-solid fa-circle-exclamation text-red-400'
                 : 'fa-solid fa-circle-check text-[#F15A24]';
             toast.classList.remove('hidden');
-            toast.classList.add('flex', 'toast-show');
+            toast.classList.add('flex', 'toast-visible');
             if (toastTimer) clearTimeout(toastTimer);
             toastTimer = setTimeout(() => {
                 toast.classList.add('hidden');
-                toast.classList.remove('flex', 'toast-show');
+                toast.classList.remove('flex', 'toast-visible');
             }, 2600);
         }
     </script>
