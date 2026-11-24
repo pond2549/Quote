@@ -28,6 +28,7 @@
             --ink-black: #000000;
             --line-dark: #333333;
             --line-mid: #888888;
+            --img-box-height: 130px;
         }
 
         * {
@@ -346,6 +347,9 @@
             position: relative;
             overflow: hidden;
             background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         /* 4 Full-Height Vertical Divider Lines at 7%, 58%, 68%, 84% */
@@ -433,6 +437,144 @@
         .row-delete-btn:hover {
             background: #dc2626;
             color: #ffffff;
+        }
+
+        /* ==================== 2 IMAGE SLOTS UNDER ITEMS (INSIDE "รายการ" COLUMN) ==================== */
+        .images-zone {
+            margin-left: 7%;
+            width: 51%;
+            padding: 6px 10px 8px 10px;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 3;
+            flex-shrink: 0;
+        }
+
+        .images-grid {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .img-slot {
+            flex: 1;
+            min-width: 0;
+            max-width: calc(50% - 4px);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .img-drop-box {
+            width: 100%;
+            height: var(--img-box-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+
+        .img-slot.is-empty .img-drop-box {
+            border: 1.5px dashed #cbd5e1;
+            background-color: rgba(248, 250, 252, 0.85);
+        }
+
+        .img-slot.is-empty .img-drop-box:hover,
+        .img-slot.is-dragover .img-drop-box {
+            border-color: var(--brand-orange);
+            background-color: rgba(255, 247, 237, 0.92);
+        }
+
+        .img-slot.has-image .img-drop-box {
+            border: 1px solid transparent;
+            background-color: transparent;
+        }
+
+        .img-slot.has-image .img-drop-box:hover {
+            border-color: rgba(241, 90, 36, 0.35);
+            background-color: rgba(241, 90, 36, 0.03);
+        }
+
+        .img-empty-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 500;
+            text-align: center;
+            padding: 6px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .img-slot.has-image .img-empty-prompt {
+            display: none;
+        }
+
+        /* CRITICAL html2canvas Aspect Ratio Preservation: never use width/height 100% + object-fit */
+        .img-preview {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: none;
+        }
+
+        .img-slot.has-image .img-preview {
+            display: block;
+        }
+
+        .img-remove-btn {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.9);
+            color: #ffffff;
+            border: 1.5px solid #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 6;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.12s ease, background-color 0.12s ease;
+        }
+
+        .img-slot.has-image .img-remove-btn {
+            display: flex;
+        }
+
+        .img-remove-btn:hover {
+            background: #b91c1c;
+            transform: scale(1.08);
+        }
+
+        .img-caption {
+            margin-top: 3px;
+            font-size: 10.5px;
+            font-weight: 500;
+            line-height: 1.3;
+            color: #222222;
+            text-align: center;
+        }
+
+        .img-slot.is-empty .img-caption {
+            display: none;
         }
 
         /* ==================== FOOTER SUMMARY (68% Left / 32% Right) ==================== */
@@ -633,6 +775,17 @@
                 display: none !important;
             }
 
+            .images-zone.all-empty,
+            .img-slot.is-empty,
+            .img-caption.is-empty-caption {
+                display: none !important;
+            }
+
+            .img-slot.has-image .img-drop-box {
+                border-color: transparent !important;
+                background: transparent !important;
+            }
+
             .sheet-viewport {
                 padding: 0 !important;
                 margin: 0 !important;
@@ -681,7 +834,7 @@
                 </div>
                 <div class="leading-tight">
                     <div class="font-bold text-gray-900 text-xs sm:text-sm">ระบบออกใบเสนอราคา D-SIGNAGE</div>
-                    <div class="text-[11px] text-gray-500">ส่งออกไฟล์ PDF ขนาด A4 เป๊ะ ไม่ตัดขอบ รองรับทุกอุปกรณ์</div>
+                    <div class="text-[11px] text-gray-500">ส่งออกไฟล์ PDF </div>
                 </div>
             </div>
 
@@ -713,6 +866,17 @@
                     <input type="checkbox" id="watermark-checkbox" checked onchange="toggleWatermark()"
                         class="w-3.5 h-3.5 accent-[#F15A24] rounded cursor-pointer">
                     <span>ลายน้ำ D-SIGNAGE</span>
+                </label>
+
+                <!-- Compact Slider: ขนาดรูป (90px - 200px) -->
+                <label class="px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-800 text-xs font-semibold flex items-center gap-1.5 select-none"
+                    title="ปรับความสูงของกรอบรูปภาพใต้รายการ">
+                    <i class="fa-regular fa-image text-[#F15A24]"></i>
+                    <span>ขนาดรูป</span>
+                    <input type="range" id="img-height-slider" min="90" max="200" value="130" step="5"
+                        oninput="updateImageHeight(this.value)"
+                        class="w-16 sm:w-20 accent-[#F15A24] cursor-pointer">
+                    <span id="img-height-value" class="text-[11px] text-gray-500 tabular-nums w-8 text-right">130px</span>
                 </label>
 
                 <!-- ล้างข้อมูล -->
@@ -856,6 +1020,51 @@
                     <div id="items-rows-container" class="items-rows-layer">
                         <!-- Initial empty row injected by JS -->
                     </div>
+
+                    <!-- 2 Image Upload Slots at bottom of "รายการ" column -->
+                    <div id="images-zone" class="images-zone all-empty">
+                        <div class="images-grid">
+                            <!-- Image Slot 1 -->
+                            <div id="img-slot-1" class="img-slot is-empty" data-slot="1">
+                                <input type="file" id="img-input-1" accept="image/*" class="hidden"
+                                    onchange="handleImageFile(1, this.files[0])">
+                                <div class="img-drop-box" onclick="triggerImageUpload(1)"
+                                    title="คลิกหรือลากไฟล์รูปภาพมาวางเพื่อเพิ่มรูปที่ 1">
+                                    <div class="img-empty-prompt no-pdf">
+                                        <i class="fa-regular fa-image text-lg text-orange-400"></i>
+                                        <span>+ เพิ่มรูปที่ 1</span>
+                                    </div>
+                                    <img id="img-preview-1" class="img-preview" alt="รูปประกอบที่ 1">
+                                    <button type="button" class="img-remove-btn no-pdf"
+                                        onclick="removeImage(event, 1)" title="ลบรูปที่ 1">&times;</button>
+                                </div>
+                                <input type="text" id="img-caption-1"
+                                    class="sheet-input img-caption is-empty-caption"
+                                    placeholder="คำอธิบายรูปที่ 1 (ไม่ใส่ก็ได้)"
+                                    oninput="syncCaptionEmptyClass(this)">
+                            </div>
+
+                            <!-- Image Slot 2 -->
+                            <div id="img-slot-2" class="img-slot is-empty" data-slot="2">
+                                <input type="file" id="img-input-2" accept="image/*" class="hidden"
+                                    onchange="handleImageFile(2, this.files[0])">
+                                <div class="img-drop-box" onclick="triggerImageUpload(2)"
+                                    title="คลิกหรือลากไฟล์รูปภาพมาวางเพื่อเพิ่มรูปที่ 2">
+                                    <div class="img-empty-prompt no-pdf">
+                                        <i class="fa-regular fa-image text-lg text-orange-400"></i>
+                                        <span>+ เพิ่มรูปที่ 2</span>
+                                    </div>
+                                    <img id="img-preview-2" class="img-preview" alt="รูปประกอบที่ 2">
+                                    <button type="button" class="img-remove-btn no-pdf"
+                                        onclick="removeImage(event, 2)" title="ลบรูปที่ 2">&times;</button>
+                                </div>
+                                <input type="text" id="img-caption-2"
+                                    class="sheet-input img-caption is-empty-caption"
+                                    placeholder="คำอธิบายรูปที่ 2 (ไม่ใส่ก็ได้)"
+                                    oninput="syncCaptionEmptyClass(this)">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Footer Summary (68% Left / 32% Right) -->
@@ -911,7 +1120,9 @@
                 <!-- Right Box: ผู้เสนอราคา -->
                 <div class="signature-box">
                     <div class="sig-line-right"></div>
-                    <div class="sig-text">นางสาวปรียานุช เชษฐพันธ์</div>
+                    <input type="text" id="proposer-name" class="sheet-input sig-text text-center"
+                        style="width: 85%;" value="นางสาวปรียานุช เชษฐพันธ์"
+                        oninput="savePersistentSettings()" aria-label="ชื่อผู้เสนอราคา">
                     <div class="sig-text">ผู้เสนอราคา</div>
                     <div class="sig-date-row">
                         <span>วันที่</span>
@@ -980,12 +1191,14 @@
             paymentTerms: 'มัดจำ 50% วันที่ตกลงสั่งทำ\nส่วนที่เหลือเมื่องานเสร็จ',
             deliveryTerms: 'ไม่เกิน 15 วัน',
             noteLine1: '* มัดจำ 50 % ในวันตกลงสั่งทำ',
-            noteLine2: '* ธ.กรุงศรี 6111111453 นายณรงค์ สุวรรณรัตน์'
+            noteLine2: '* ธ.กรุงศรี 6111111453 นายณรงค์ สุวรรณรัตน์',
+            proposerName: 'นางสาวปรียานุช เชษฐพันธ์'
         };
 
         window.addEventListener('DOMContentLoaded', () => {
             loadPersistentSettings();
             initItemRows();
+            setupImageDragDrop();
             toggleWatermark();
             recalculateTotals();
         });
@@ -1004,6 +1217,7 @@
             document.getElementById('delivery-terms').value = saved.deliveryTerms;
             document.getElementById('note-line-1').value = saved.noteLine1;
             document.getElementById('note-line-2').value = saved.noteLine2;
+            document.getElementById('proposer-name').value = saved.proposerName;
         }
 
         function savePersistentSettings() {
@@ -1012,7 +1226,8 @@
                 paymentTerms: document.getElementById('payment-terms').value,
                 deliveryTerms: document.getElementById('delivery-terms').value,
                 noteLine1: document.getElementById('note-line-1').value,
-                noteLine2: document.getElementById('note-line-2').value
+                noteLine2: document.getElementById('note-line-2').value,
+                proposerName: document.getElementById('proposer-name').value
             };
             try {
                 localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
@@ -1245,8 +1460,103 @@
         }
 
         /* =====================================================================
-         * 5. TOOLBAR ACTIONS (DATE, WATERMARK, RESET, PRINT)
+         * 5. TOOLBAR ACTIONS (DATE, WATERMARK, IMAGES, RESET, PRINT)
          * ===================================================================== */
+        function triggerImageUpload(slotNum) {
+            const input = document.getElementById(`img-input-${slotNum}`);
+            if (input) input.click();
+        }
+
+        function handleImageFile(slotNum, file) {
+            if (!file) return;
+            if (!file.type || !file.type.startsWith('image/')) {
+                showToast('กรุณาเลือกไฟล์รูปภาพเท่านั้น (JPG, PNG, WebP)', true);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const slot = document.getElementById(`img-slot-${slotNum}`);
+                const preview = document.getElementById(`img-preview-${slotNum}`);
+                preview.src = e.target.result;
+                slot.classList.remove('is-empty');
+                slot.classList.add('has-image');
+                syncImagesZoneState();
+                showToast(`เพิ่มรูปที่ ${slotNum} เรียบร้อยแล้ว`);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage(event, slotNum) {
+            if (event) event.stopPropagation();
+            const slot = document.getElementById(`img-slot-${slotNum}`);
+            const input = document.getElementById(`img-input-${slotNum}`);
+            const preview = document.getElementById(`img-preview-${slotNum}`);
+            const caption = document.getElementById(`img-caption-${slotNum}`);
+
+            if (input) input.value = '';
+            if (preview) preview.removeAttribute('src');
+            if (caption) {
+                caption.value = '';
+                syncCaptionEmptyClass(caption);
+            }
+            if (slot) {
+                slot.classList.remove('has-image');
+                slot.classList.add('is-empty');
+            }
+            syncImagesZoneState();
+        }
+
+        function syncImagesZoneState() {
+            const zone = document.getElementById('images-zone');
+            const s1 = document.getElementById('img-slot-1');
+            const s2 = document.getElementById('img-slot-2');
+            const bothEmpty = s1.classList.contains('is-empty') && s2.classList.contains('is-empty');
+            zone.classList.toggle('all-empty', bothEmpty);
+        }
+
+        function syncCaptionEmptyClass(inputEl) {
+            if (!inputEl) return;
+            inputEl.classList.toggle('is-empty-caption', inputEl.value.trim() === '');
+        }
+
+        function updateImageHeight(pxVal) {
+            const clamped = Math.max(90, Math.min(200, parseInt(pxVal, 10) || 130));
+            document.documentElement.style.setProperty('--img-box-height', `${clamped}px`);
+            const label = document.getElementById('img-height-value');
+            if (label) label.textContent = `${clamped}px`;
+        }
+
+        function setupImageDragDrop() {
+            [1, 2].forEach((slotNum) => {
+                const slot = document.getElementById(`img-slot-${slotNum}`);
+                if (!slot) return;
+
+                ['dragenter', 'dragover'].forEach((evtName) => {
+                    slot.addEventListener(evtName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        slot.classList.add('is-dragover');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach((evtName) => {
+                    slot.addEventListener(evtName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        slot.classList.remove('is-dragover');
+                    });
+                });
+
+                slot.addEventListener('drop', (e) => {
+                    const files = e.dataTransfer && e.dataTransfer.files;
+                    if (files && files.length > 0) {
+                        handleImageFile(slotNum, files[0]);
+                    }
+                });
+            });
+        }
+
         function fillTodayThaiDate() {
             const now = new Date();
             const dd = String(now.getDate()).padStart(2, '0');
@@ -1292,10 +1602,12 @@
             document.getElementById('doc-date').value = '';
             document.getElementById('sign-date-left').value = '';
             document.getElementById('sign-date-right').value = '';
+            removeImage(null, 1);
+            removeImage(null, 2);
             initItemRows();
             recalculateTotals();
             closeResetModal();
-            showToast('ล้างข้อมูลลูกค้าและรายการสินค้าเรียบร้อยแล้ว');
+            showToast('ล้างข้อมูลลูกค้า รายการ และรูปภาพเรียบร้อยแล้ว');
         }
 
         function printSheet() {
@@ -1331,9 +1643,12 @@
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
 
+            const prevScrollX = window.scrollX;
+            const prevScrollY = window.scrollY;
             let sandbox = null;
 
             try {
+                window.scrollTo(0, 0);
                 const sourceSheet = document.getElementById('a4-sheet');
 
                 // Create fixed-position sandbox at (0, 0) behind loading overlay
@@ -1358,21 +1673,60 @@
                 clonedSheet.style.boxShadow = 'none';
                 clonedSheet.style.margin = '0';
 
-                // Remove all .no-pdf elements (e.g., row delete buttons)
+                // Remove all .no-pdf elements (e.g., row delete buttons, upload prompts, remove buttons)
                 clonedSheet.querySelectorAll('.no-pdf').forEach(el => el.remove());
 
-                // Pair live fields with cloned fields before replacing so live textarea values are preserved
-                const liveFields = sourceSheet.querySelectorAll('input, textarea');
-                const clonedFields = clonedSheet.querySelectorAll('input, textarea');
+                // Pair live fields with cloned fields BEFORE removing empty image slots so indices match 1:1
+                const liveFields = Array.from(sourceSheet.querySelectorAll('input, textarea'));
+                const clonedFields = Array.from(clonedSheet.querySelectorAll('input, textarea'));
+                const fieldValueMap = new Map();
+                clonedFields.forEach((clonedField, index) => {
+                    const liveField = liveFields[index];
+                    fieldValueMap.set(clonedField, liveField ? liveField.value : clonedField.value);
+                });
+
+                // Copy live image DataURLs explicitly and remove empty image slots from clone
+                [1, 2].forEach((slotNum) => {
+                    const liveImg = document.getElementById(`img-preview-${slotNum}`);
+                    const clonedImg = clonedSheet.querySelector(`#img-preview-${slotNum}`);
+                    if (liveImg && clonedImg && liveImg.getAttribute('src')) {
+                        clonedImg.src = liveImg.src;
+                    }
+                });
+
+                clonedSheet.querySelectorAll('.img-slot.is-empty').forEach(el => el.remove());
+                const clonedImagesZone = clonedSheet.querySelector('#images-zone');
+                if (clonedImagesZone) {
+                    const remainingSlots = clonedImagesZone.querySelectorAll('.img-slot');
+                    if (remainingSlots.length === 0) {
+                        clonedImagesZone.remove();
+                    } else if (remainingSlots.length === 1) {
+                        remainingSlots[0].style.maxWidth = '58%';
+                    }
+                }
 
                 // Mount sandbox in DOM so getComputedStyle returns exact layout metrics
                 sandbox.appendChild(clonedSheet);
                 document.body.appendChild(sandbox);
 
-                // Replace every <input> and <textarea> with a plain <div> (no placeholders in PDF)
-                clonedFields.forEach((clonedField, index) => {
-                    const liveField = liveFields[index];
-                    const rawValue = liveField ? liveField.value : clonedField.value;
+                // Replace every remaining <input> and <textarea> with a plain <div> (no placeholders in PDF)
+                clonedSheet.querySelectorAll('input, textarea').forEach((clonedField) => {
+                    if (clonedField.type === 'file') {
+                        clonedField.remove();
+                        return;
+                    }
+
+                    const rawValue = fieldValueMap.has(clonedField)
+                        ? fieldValueMap.get(clonedField)
+                        : clonedField.value;
+                    const isCaption = clonedField.classList.contains('img-caption');
+
+                    // Hide empty image captions cleanly in PDF
+                    if (isCaption && rawValue.trim() === '') {
+                        clonedField.remove();
+                        return;
+                    }
+
                     const cs = window.getComputedStyle(clonedField);
                     const isDottedDate = clonedField.classList.contains('dotted-date-input');
                     const isTaxId = clonedField.classList.contains('tax-id-input');
@@ -1409,10 +1763,17 @@
                     clonedField.parentNode.replaceChild(replacement, clonedField);
                 });
 
-                // Wait for webfonts and layout paint stabilization
+                // Wait for webfonts and all cloned images to finish decoding
                 if (document.fonts && document.fonts.ready) {
                     await document.fonts.ready;
                 }
+                const clonedImgs = Array.from(clonedSheet.querySelectorAll('img')).filter(img => img.getAttribute('src'));
+                await Promise.all(clonedImgs.map(img => {
+                    if (typeof img.decode === 'function') {
+                        return img.decode().catch(() => {});
+                    }
+                    return Promise.resolve();
+                }));
                 await new Promise(resolve => setTimeout(resolve, 150));
 
                 // Capture exact 794x1123 A4 canvas at 2x resolution
@@ -1453,6 +1814,7 @@
                 if (sandbox && sandbox.parentNode) {
                     sandbox.parentNode.removeChild(sandbox);
                 }
+                window.scrollTo(prevScrollX, prevScrollY);
                 overlay.classList.add('hidden');
                 overlay.classList.remove('flex');
                 exportBtn.disabled = false;
